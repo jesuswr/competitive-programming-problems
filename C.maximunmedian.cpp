@@ -4,14 +4,14 @@
 
 using namespace std;
 
-int numbs[2*int(1e5)+5];
+long long numbs[2*int(1e5)+5];
 
 int main(){
-	int n, k;
-	scanf("%d %d", &n, &k);
+	long long n, k;
+	scanf("%lld %lld", &n, &k);
 	for (int i = 0; i < n; ++i)
 	{
-		scanf("%d", &numbs[i]);
+		scanf("%lld", &numbs[i]);
 	}
 	sort(numbs, numbs+n);
 	int ind = n/2;
@@ -20,8 +20,10 @@ int main(){
 	while(k>0) {
 	    if (cont*(numbs[aux]-numbs[ind])<=k && aux<n)
 	    {
-	    	//printf("hola\n");
+	    	
+	    	
 	    	k -= (numbs[aux] - numbs[ind])*cont;
+	    	
 	    	numbs[ind] = numbs[aux];
 
 	    	aux++;
@@ -29,14 +31,16 @@ int main(){
 	    }
 	    else if (k>=cont || aux>=n)
 	    {
+	    	
 	    	numbs[ind] += k/cont;
 	    	break;
 	    }
 	    else
 	    {
+	    	
 	    	break;
 	    }
 	}
-	printf("%d\n", numbs[ind]);
+	printf("%lld\n", numbs[ind]);
 
 }
