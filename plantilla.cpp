@@ -27,7 +27,10 @@ const int INF = 0x3f3f3f3f;
 const ll LLINF = 1e18;
 const int maxN = 1e5; // CAMBIAR ESTE
 
+// GJNM
+
 int main()
 {
 
+	return 0;
 }
