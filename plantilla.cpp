@@ -18,11 +18,11 @@ typedef pair<int,pair<int,int>> piii;
 typedef vector<int> vi;
 typedef vector<pii> vii;
 
-#define ri(a) scanf("%d", &a);
-#define rii(a,b) scanf("%d %d", &a, &b);
-#define riii(a,b,c) scanf("%d %d %d", &a, &b, &c);
-#define rl(a) scanf("%lld", &a);
-#define rll(a,b) scanf("%lld %lld", &a, &b);
+#define ri(a) scanf("%d", &a)
+#define rii(a,b) scanf("%d %d", &a, &b)
+#define riii(a,b,c) scanf("%d %d %d", &a, &b, &c)
+#define rl(a) scanf("%lld", &a)
+#define rll(a,b) scanf("%lld %lld", &a, &b)
 #define FOR(i,n,m) for(int i=n; i<m; i++)
 #define ROF(i,n,m) for(int i=n; i>m; i--)
 #define pb push_back
