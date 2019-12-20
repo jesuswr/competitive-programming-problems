@@ -28,8 +28,6 @@ typedef vector<pii> vii;
 #define pb push_back
 #define lb lower_bound
 #define ub upper_bound
-#define f first
-#define s second
 
 const int INF = 0x3f3f3f3f;
 const ll LLINF = 1e18;
@@ -39,6 +37,23 @@ const int maxN = 1e5; // CAMBIAR ESTE
 
 int main()
 {
-
+	int t;
+	ri(t);
+	while(t--){
+		ll a,b,s,d,ss;
+		rll(a,b);
+		d = max(a,b) - min(a,b);
+		s = 0;
+		while( s*(s+1)/2 < d ) s++;
+		ss = s*(s+1)/2;
+		if (ss%2==d%2) printf("%lld\n", s);
+		else{
+			while ( ss%2 != d%2 ){
+				s++;
+				ss = s*(s+1)/2;
+			}
+			printf("%lld\n", s);
+		}
+	}
 	return 0;
 }
