@@ -33,11 +33,45 @@ typedef vector<pii> vii;
 
 const int INF = 0x3f3f3f3f;
 const ll LLINF = 1e18;
-const int maxN = 1e5; // CAMBIAR ESTE
+const int maxN = 1e5+5; // CAMBIAR ESTE
 
 // GJNM
+ll arr[maxN];
+ll pre[maxN];
 
-int main(){
-
+int main()
+{
+	int t;
+	ri(t);
+	while(t--){
+		int n;
+		ri(n);
+		ll s = 0;
+		FOR(i,0,n){
+			rl(arr[i]);
+			s += arr[i];
+			pre[i] = arr[i];
+		}
+		FOR(i,1,n)
+			pre[i] += pre[i-1];
+		ll mn = 0;
+		ll mn2 = pre[0];
+		ll ans = -1;
+		FOR(i,0,n){
+			if (i==n-1){
+				ans = max( ans , pre[i]-mn2 );
+			}
+			else{
+				ans = max( ans , pre[i] - mn );
+				mn = min( mn , pre[i] );
+				mn2 = min( mn2 , pre[i] );
+			}
+		}
+		//printf("%lld %lld\n", s, ans);
+		if ( ans >= s )
+			printf("NO\n");
+		else
+			printf("YES\n");
+	}
 	return 0;
 }

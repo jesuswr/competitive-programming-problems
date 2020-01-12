@@ -37,7 +37,19 @@ const int maxN = 1e5; // CAMBIAR ESTE
 
 // GJNM
 
-int main(){
-
+int main()
+{
+	int l = 0, r = 0;
+	int n;
+	ri(n);
+	FOR(i,0,n){
+		char c;
+		scanf("%c",&c);
+		if ( c == 'L')
+			l++;
+		else
+			r++;
+	}
+	printf("%d\n", r+l+1);
 	return 0;
 }

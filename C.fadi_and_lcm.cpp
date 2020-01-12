@@ -37,7 +37,30 @@ const int maxN = 1e5; // CAMBIAR ESTE
 
 // GJNM
 
-int main(){
+pair<ll,ll> makeOrdPair( ll a , ll b ){
+	if ( a >= b )
+		return {a,b};
+	return {b,a};
+}
 
+pair<ll,ll> minPLL( pair<ll,ll> p , pair<ll,ll> q){
+	if ( p.f > q.f )
+		return q;
+	else
+		return p;
+}
+
+int main()
+{
+	ll n;
+	rl(n);
+	pair<ll,ll> ans = {LLINF,LLINF};
+	if ( n == 1 )
+		ans = {1,1};
+	for (ll i = 1; i*i < n; i++){
+		if ( n%i == 0 && __gcd(i,n/i) == 1)
+			ans = minPLL( ans , makeOrdPair( i , n/i ) );
+	}
+	printf("%lld %lld\n", ans.f, ans.s);
 	return 0;
 }
