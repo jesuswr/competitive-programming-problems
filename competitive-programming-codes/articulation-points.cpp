@@ -34,34 +34,32 @@ const ll LLINF = 1e18;
 const int maxN = 1e6+10; // CAMBIAR ESTE
 
 // GJNM
-int v,e,vis[maxN],low[maxN],t, parent[maxN],d[maxN];
-vi g[maxN];
-map<int,bool> ans;
+int low[maxN], disc[maxN];
+bool vis[maxN];
+int t;
 
-void dfs( int x )
-{
-	vis[x] = 1;
-	t++;
-	low[x] = d[x] = t;
-	int count = 0;
-	for( int y : g[x] )
-	{
-		if ( !vis[y] )
-		{
-			count++;
-			parent[y] = x;
-			dfs(y);
-
-			low[x] = min( low[x] , low[y] );
-			if ( parent[x] != -1 && low[y] >= d[x] )
-			{
-				ans[x] = true;
+void dfs(int x, int father = -1){
+	low[x] = disc[x] = t++;
+	vis[x] = true;
+	int children = 0;
+	for(auto y : g[x]){
+		if ( !vis[y] ){
+			children++;
+			dfs(y,x);
+			if (low[y]>=disc[x] && father!=-1){
+				// PUNTO DE ARTICULACION
 			}
+			if (low[y]>disc[x]){
+				// PUENTE
+			}
+			low[x] = min(low[x],low[y]);
 		}
-		else if ( parent[x] != y )
-		{
-			low[x] = min( low[x] , d[y] );
+		else if ( y != father ){
+			low[x] = min(low[x], disc[y]);
 		}
 	}
-	if ( parent[x] == -1 && count > 1 ) ans[x] = true;
+
+	if ( father == -1 && children > 1 ){
+		// PTO DE ART
+	}
 }
