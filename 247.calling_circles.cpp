@@ -52,13 +52,10 @@ void tarjan(int u){
 
 	st.push(u);
 	for(auto v : g[u]){
-		if ( low[v] == -1 ){
+		if ( low[v] == -1 )
 			tarjan(v);
+		if ( vis[v] )
 			low[u] = min(low[u], low[v]);
-		}
-		if ( vis[v] ){
-			low[u] = min(low[u], disc[v]);
-		}
 	}
 
 	if ( low[u] == disc[u] ){
