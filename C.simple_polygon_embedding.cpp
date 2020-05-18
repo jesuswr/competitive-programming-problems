@@ -39,17 +39,38 @@ const ll LLINF = 1e18;
 const int maxN = 1e5; // CAMBIAR ESTE
 
 // GJNM
+long double f(long double ang, long double side1, long double side2){
+	return max(cos(ang)*side1, cos(ang)*side2);
+
+}
 
 int main(){
 	int t;
 	ri(t);
 	while(t--){
-		long double n;
-		scanf("%Lf", &n);
+		int n;
+		scanf("%d", &n);
 		n = 2*n;
 		long double angle = PI/n;
-		printf("%.9Lf\n", 1/tan(angle));
-
+		if ( n & 2 ){
+			long double sd1 = 1/tan(angle)/2, sd2 = 1/sin(angle)/2;
+			long double low = 0, high = angle/2;
+			int it = 80;
+			while(it--){
+				long double a = low + (high-low)/3;
+				long double b = low + 2*(high-low)/3;
+				if ( f(a, sd1, sd2) > f(b,sd1,sd2) ){
+					low = a;
+				}
+				else{
+					high = b;
+				}
+			}
+			printf("%.9Lf\n", 2*f(low,sd1,sd2));
+		}
+		else{
+			printf("%.9Lf\n", 1/tan(angle));
+		}
 	}
 	return 0;
 }
