@@ -52,6 +52,7 @@ int main(){
 		scanf("%d", &n);
 		n = 2*n;
 		long double angle = PI/n;
+		
 		if ( n & 2 ){
 			long double sd1 = 1/tan(angle)/2, sd2 = 1/sin(angle)/2;
 			long double low = 0, high = angle/2;
@@ -69,7 +70,7 @@ int main(){
 			printf("%.9Lf\n", 2*f(low,sd1,sd2));
 		}
 		else{
-			printf("%.9Lf\n", 1/tan(angle));
+			printf("%.9Lf\n", 1.0/tan(angle));
 		}
 	}
 	return 0;
