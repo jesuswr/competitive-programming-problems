@@ -56,19 +56,22 @@ void ins(int p){
 	A[p]++;
 }
 
-void del(int k){
-	int low = 1, high = 1e6;
-	int ans = INF;
-	while(low <= high){
-		int mid = (low + high)/2;
-		if ( sumBIT(mid) >= k ){
-			ans = min(ans,mid);
-			high = mid-1;
-		}
-		else{
-			low = mid+1;
+int bit_search(int v){
+	int sum = 0;
+	int pos = 0;
+	
+	for(int i=20; i>=0; i--){
+		if(pos + (1 << i) < maxN and sum + BIT[pos + (1 << i)] < v){
+			sum += BIT[pos + (1 << i)];
+			pos += (1 << i);
 		}
 	}
+
+	return pos + 1; // +1 because 'pos' will have position of largest value less than 'v'
+}
+
+void del(int k){
+	int ans = bit_search(k);
 	updBIT(ans,-1);
 	A[ans]--;
 }
