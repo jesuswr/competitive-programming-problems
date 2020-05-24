@@ -28,43 +28,44 @@ typedef vector<pii> vii;
 #define pb push_back
 #define lb lower_bound
 #define ub upper_bound
-#define f first
-#define s second
+#define F first
+#define S second
 
 const int INF = 0x3f3f3f3f;
 const ll LLINF = 1e18;
-const int maxN = 1e5+10; // CAMBIAR ESTE
+const int maxN = 1e5; // CAMBIAR ESTE
 
 // GJNM
-ll arr[maxN];
+int A[maxN];
 
-int main()
-{
+
+int main(){
 	int t;
 	ri(t);
 	while(t--){
 		int n;
 		ri(n);
 		FOR(i,0,n)
-			rl(arr[i]);
-		ll sum, xr;
-		sum = xr = 0;
+			ri(A[i]);
+		
+		sort(A, A+n);
+		int odd = 0, even = 0;
+		bool ext = false;
+		
 		FOR(i,0,n){
-			sum += arr[i];
-			xr = xr^arr[i];
-		}
-		bool odd = false;
-		if ( sum & 1 )
-			odd = true;
+			if ( A[i] & 1 )
+				odd++;
+			else
+				even++;
 
-		if ( sum/2 == xr && !odd){
-			printf("0\n");
-			printf("\n");
+			if ( i < n-1 && A[i] + 1 == A[i+1] )
+				ext = true;
 		}
-		else{
-			printf("2\n");
-			printf("%lld %lld\n",xr, sum+xr );
-		}
+		//printf("%d %d %d\n",odd, even, ext );
+		if ( (odd & 1) == 0 || ext )
+			printf("YES\n");
+		else
+			printf("NO\n");
 	}
 	return 0;
 }
