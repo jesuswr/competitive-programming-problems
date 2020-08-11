@@ -44,90 +44,90 @@ bool vis[maxN][20];
 int r, c;
 
 int f(int pos, int put) {
-	if ( vis[pos][put] )
-		return dp[pos][put];
-	vis[pos][put] = true;
-	if ( pos == c - 1 ) {
-		int cst = 0;
-		FOR(j, 0, r) {
-			cst += ( (int)(m[j][pos] - '0') != help[put][j][1]);
-		}
-		return dp[pos][put] = cst;
-	}
+    if ( vis[pos][put] )
+        return dp[pos][put];
+    vis[pos][put] = true;
+    if ( pos == c - 1 ) {
+        int cst = 0;
+        FOR(j, 0, r) {
+            cst += ( (int)(m[j][pos] - '0') != help[put][j][1]);
+        }
+        return dp[pos][put] = cst;
+    }
 
-	dp[pos][put] = INF;
-	FOR(i, 0, help.size()) {
-		bool valid = true;
-		FOR(j, 0, r) {
-			if ( help[put][j][1] != help[i][j][0] )
-				valid = false;
-		}
-		if ( !valid )
-			continue;
+    dp[pos][put] = INF;
+    FOR(i, 0, help.size()) {
+        bool valid = true;
+        FOR(j, 0, r) {
+            if ( help[put][j][1] != help[i][j][0] )
+                valid = false;
+        }
+        if ( !valid )
+            continue;
 
-		int cst = 0;
-		FOR(j, 0, r) {
-			cst += ( (int)(m[j][pos] - '0') != help[i][j][0]);
-		}
-		cst += f(pos + 1, i);
-		dp[pos][put] = min(cst, dp[pos][put]);
-	}
-	return dp[pos][put];
+        int cst = 0;
+        FOR(j, 0, r) {
+            cst += ( (int)(m[j][pos] - '0') != help[i][j][0]);
+        }
+        cst += f(pos + 1, i);
+        dp[pos][put] = min(cst, dp[pos][put]);
+    }
+    return dp[pos][put];
 
 }
 
 int main() {
-	rii(r, c);
-	if ( r >= 4 && c >= 4 ) {
-		printf("-1\n");
-		return 0;
-	}
-	if ( r == 1 || c == 1 ) {
-		printf("0\n");
-		return 0;
-	}
+    rii(r, c);
+    if ( r >= 4 && c >= 4 ) {
+        printf("-1\n");
+        return 0;
+    }
+    if ( r == 1 || c == 1 ) {
+        printf("0\n");
+        return 0;
+    }
 
-	FOR(i, 0, r) {
-		cin >> m[i];
-	}
-	if ( r > c ) {
-		FOR(i, 0, c) {
-			FOR(j, 0, r) {
-				m2[i].pb(m[j][i]);
-			}
-		}
-		FOR(i, 0, c) {
-			m[c - i - 1] = m2[i];
-		}
-		swap(r, c);
-	}
+    FOR(i, 0, r) {
+        cin >> m[i];
+    }
+    if ( r > c ) {
+        FOR(i, 0, c) {
+            FOR(j, 0, r) {
+                m2[i].pb(m[j][i]);
+            }
+        }
+        FOR(i, 0, c) {
+            m[c - i - 1] = m2[i];
+        }
+        swap(r, c);
+    }
 
-	if ( r == 2 ) {
-		FOR(zz, 0, 2) FOR(zo, 0, 2) FOR(oz, 0, 2) FOR(oo, 0, 2) {
-			vector<vi> aux = {{zz, zo}, {oz, oo}};
-			if ( (zz + zo + oz + oo) & 1 )
-				help.pb(aux);
-		}
-	}
-	else if ( r == 3 ) {
-		FOR(zz, 0, 2) FOR(zo, 0, 2) FOR(oz, 0, 2) FOR(oo, 0, 2) FOR(tz, 0, 2) FOR(to, 0, 2) {
-			vector<vi> aux = {{zz, zo}, {oz, oo}, {tz, to}};
-			if ( ((zz + zo + oz + oo) & 1) && ((tz + to + oz + oo) & 1) ) {
-				help.pb(aux);
-			}
-		}
-	}
+    if ( r == 2 ) {
+        FOR(zz, 0, 2) FOR(zo, 0, 2) FOR(oz, 0, 2) FOR(oo, 0, 2) {
+            vector<vi> aux = {{zz, zo}, {oz, oo}};
+            if ( (zz + zo + oz + oo) & 1 )
+                help.pb(aux);
+        }
+    }
+    else if ( r == 3 ) {
+        FOR(zz, 0, 2) FOR(zo, 0, 2) FOR(oz, 0, 2) FOR(oo, 0, 2) FOR(tz, 0, 2) FOR(to, 0, 2) {
+            vector<vi> aux = {{zz, zo}, {oz, oo}, {tz, to}};
+            if ( ((zz + zo + oz + oo) & 1) && ((tz + to + oz + oo) & 1) ) {
+                help.pb(aux);
+            }
+        }
+    }
 
-	int mn = INF;
-	FOR(i, 0, help.size()) {
-		int cst = 0;
-		FOR(j, 0, r) {
-			cst += ( (int)(m[j][0] - '0') != help[i][j][0]);
-		}
-		cst += f(1, i);
-		mn = min(cst, mn);
-	}
-	printf("%d\n", mn);
+    int mn = INF;
+    FOR(i, 0, help.size()) {
+        int cst = 0;
+        FOR(j, 0, r) {
+            cst += ( (int)(m[j][0] - '0') != help[i][j][0]);
+        }
+        cst += f(1, i);
+        mn = min(cst, mn);
+    }
+    printf("%d\n", mn);
 
-	return 0;
+    return 0;
 }
