@@ -39,5 +39,5 @@ const int maxN = 1e5; // CAMBIAR ESTE
 
 int main(){
 
-	return 0;
+    return 0;
 }
