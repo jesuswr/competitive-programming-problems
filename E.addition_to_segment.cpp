@@ -33,21 +33,32 @@ typedef vector<pii> vii;
 
 const int INF = 0x3f3f3f3f;
 const ll LLINF = 1e18;
-const int MAXN = 3e5; // CAMBIAR ESTE
+const int MAXN = 1e6; // CAMBIAR ESTE
 
 // GJNM
+
 // Todos los rangos son semi-abiertos [a,b)
-int N, A[MAXN], B[MAXN];
+int N;
+ll A[MAXN];
 struct STN {
-	int sum;
+	ll sm;
 	void merge(STN& L, STN& R) {
-		sum = L.sum + R.sum;
+		sm = L.sm + R.sm;
 	}
-	void operator=(int a) {
-		sum = a;
+	void operator=(ll a) {
+		sm += a;
 	}
 };
 STN ST[4 * MAXN];
+void STB(int id = 1, int l = 0, int r = N) {
+	if (r - l < 2) {
+		ST[id] = A[l];
+		return;
+	}
+	int m = (l + r) >> 1, L = id << 1, R = L | 1;
+	STB(L, l, m); STB(R, m, r);
+	ST[id].merge(ST[L], ST[R]);
+}
 STN STQ(int x, int y, int id = 1, int l = 0, int r = N) {
 	if (x == l && y == r) return ST[id];
 	int m = (l + r) >> 1, L = id << 1, R = L | 1;
@@ -58,7 +69,7 @@ STN STQ(int x, int y, int id = 1, int l = 0, int r = N) {
 }
 void STU(int p, int x, int id = 1, int l = 0, int r = N) {
 	if (r - l < 2) {
-		ST[id] = 1;
+		ST[id] = x;
 		return;
 	}
 	int m = (l + r) >> 1, L = id << 1, R = L | 1;
@@ -67,32 +78,26 @@ void STU(int p, int x, int id = 1, int l = 0, int r = N) {
 	ST[id].merge(ST[L], ST[R]);
 }
 
-int CLOSE[MAXN], OPEN[MAXN];
-
-
 int main() {
-	ri(N);
-	N = 2 * N;
-	FOR(i, 0, N) {
-		CLOSE[i] = -1;
-		OPEN[i] = INF;
+	int m;
+	rii(N, m);
+	N = N + 1;
+	FOR(i, 0, m) {
+		int type;
+		ri(type);
+		if ( type == 1 ) {
+			int l, r;
+			ll v;
+			rii(l, r), rl(v);
+			STU(l, v);
+			STU(r, -v);
+		}
+		else {
+			int i;
+			ri(i);
+			printf("%lld\n", STQ(0, i + 1).sm);
+		}
 	}
-	FOR(i, 0, N) {
-		ri(A[i]);
-		CLOSE[A[i]] = max(CLOSE[A[i]], i);
-		OPEN[A[i]] = min(OPEN[A[i]], i);
-	}
-	int ans = 0;
-	ROF(i, N - 1, -1) {
-		if ( i == CLOSE[A[i]] )
-			continue;
-		B[A[i] - 1] = STQ(0, CLOSE[A[i]]).sum;
-		STU(CLOSE[A[i]], 1);
-	}
-	FOR(i, 0, N >> 1) {
-		printf("%d ", B[i]);
-	}
-	printf("\n");
 
 	return 0;
 }
