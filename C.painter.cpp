@@ -33,88 +33,107 @@ typedef vector<pii> vii;
 
 const int INF = 0x3f3f3f3f;
 const ll LLINF = 1e18;
-const int MAXN = 3e5; // CAMBIAR ESTE
+const int MAXN = 1e6 + 10; // CAMBIAR ESTE
 
 // GJNM
+
 // Todos los rangos son semi-abiertos [a,b)
-// Todos los rangos son semi-abiertos [a,b)
-ll N, A[MAXN];
+int N, A[MAXN];
 struct STN {
-	ll val;
+	int sum_black;
+	int cnt_black;
+	int left, right;
 	void merge(STN& L, STN& R) {
-		val = L.val + R.val;
+		sum_black = L.sum_black + R.sum_black;
+		cnt_black = L.cnt_black + R.cnt_black;
+		left = L.left; right = R.right;
+		if (L.right == R.left && L.right == 0)
+			cnt_black--;
 	}
 	void operator=(ll a) {
-		val = a;
+		left = 1;
+		right = 1;
+		sum_black = 0;
+		cnt_black = 0;
 	}
 };
 STN ST[4 * MAXN];
-pair<ll, ll> lzy[4 * MAXN];
-void STB(ll id = 1, ll l = 0, ll r = N) {
+ll lzy[4 * MAXN];
+void STB(int id = 1, int l = 0, int r = N) {
+	lzy[id] = -1;
 	if (r - l < 2) {
-		ST[id] = A[l];
+		ST[id] = 1;
 		return;
 	}
-	ll m = (l + r) >> 1, L = id << 1, R = L | 1;
+	int m = (l + r) >> 1, L = id << 1, R = L | 1;
 	STB(L, l, m); STB(R, m, r);
 	ST[id].merge(ST[L], ST[R]);
 }
-ll sum(ll a, ll d, ll n) {
-	return a * n + d * n * (n - 1) / 2;
-}
 // Actualiza el nodo y guarda en lazy
-void upd(ll id, ll l, ll r, pair<ll, ll> x) {
-	lzy[id].F += x.F;
-	lzy[id].S += x.S;
-	ST[id].val += sum(x.F, x.S, r - l);
+void upd(int id, int l, int r, int x) {
+	lzy[id] = x;
+	if (x == 1) {
+		ST[id].cnt_black = 0;
+		ST[id].sum_black = 0;
+		ST[id].left = 1;
+		ST[id].right = 1;
+	}
+	else {
+		ST[id].cnt_black = 1;
+		ST[id].sum_black = (r - l);
+		ST[id].left = 0;
+		ST[id].right = 0;
+	}
 }
 // Propaga el update en lazy
-void shift(ll id, ll l, ll r) {
-	ll m = (l + r) >> 1, L = id << 1, R = L | 1;
+void shift(int id, int l, int r) {
+	int m = (l + r) >> 1, L = id << 1, R = L | 1;
 	upd(L, l, m, lzy[id]);
-	pair<ll, ll> r_lzy = lzy[id];
-	r_lzy.F = lzy[id].F + lzy[id].S * (m - l);
-	upd(R, m, r, r_lzy);
-	lzy[id] = {0, 0};
+	upd(R, m, r, lzy[id]);
+	lzy[id] = -1;
 }
-STN STQ(ll x, ll y, ll id = 1, ll l = 0, ll r = N) {
+STN STQ(int x, int y, int id = 1, int l = 0, int r = N) {
 	if (x == l && y == r) return ST[id];
-	shift(id, l, r);
-	ll m = (l + r) >> 1, L = id << 1, R = L | 1;
+	if (lzy[id] != -1)
+		shift(id, l, r);
+	int m = (l + r) >> 1, L = id << 1, R = L | 1;
 	if (x >= m) return STQ(x, y, R, m, r);
 	if (y <= m) return STQ(x, y, L, l, m);
 	STN res, ln = STQ(x, m, L, l, m), rn = STQ(m, y, R, m, r);
 	return res.merge(ln, rn), res;
 }
-void STU(ll x, ll y, pair<ll, ll> v, ll id = 1, ll l = 0, ll r = N) {
+void STU(int x, int y, int v, int id = 1, int l = 0, int r = N) {
 	if (x >= r || y <= l) return;
 	if (x <= l && y >= r) {
-		pair<ll, ll> aux_v = v;
-		aux_v.F = v.F + (l - x) * v.S;
-		upd(id, l, r, aux_v);
+		upd(id, l, r, v);
 		return;
 	}
-	shift(id, l, r);
-	ll m = (l + r) >> 1, L = id << 1, R = L | 1;
+	if (lzy[id] != -1)
+		shift(id, l, r);
+	int m = (l + r) >> 1, L = id << 1, R = L | 1;
 	STU(x, y, v, L, l, m);
 	STU(x, y, v, R, m, r);
 	ST[id].merge(ST[L], ST[R]);
 }
 
 int main() {
-	ll m;
-	rll(N, m);
-	FOR(_, 0, m) {
-		ll type; rl(type);
-		if (type == 1) {
-			ll l, r, a, d; rll(l, r); rll(a, d); l--;
-			pair<ll, ll> aux = {a, d};
-			STU(l, r, aux);
+	N = MAXN;
+	STB();
+	int n;
+	ri(n);
+	FOR(_, 0, n) {
+		char c; int l, r;
+
+		scanf("%*c%c %d %d", &c, &l, &r);
+		l += 500000; r;
+		if (c == 'W') {
+			STU(l, l+r, 1);
 		}
-		else {
-			ll pos; rl(pos); pos--;
-			printf("%lld\n", STQ(pos, pos + 1).val);
+		else { // 1
+			STU(l, l+r, 0);
 		}
+		auto ans = STQ(0, N);
+		printf("%d %d\n", ans.cnt_black, ans.sum_black);
 	}
 
 	return 0;
