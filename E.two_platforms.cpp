@@ -34,43 +34,31 @@ typedef vector<pii> vii;
 const int INF = 0x3f3f3f3f;
 const ll LLINF = 1e18;
 const int MAXN = 2e5 + 10; // CAMBIAR ESTE
-const int MAXK = 30;
+const int K = 20;
 
 // GJNM
 ll n, k;
 ll x[MAXN], y[MAXN];
 ll max_r[MAXN];
 ll max_cov[MAXN];
+ll LOG[MAXN + 1];
+ll st[MAXN][K + 1];
+
 
 
 // Todos los rangos son semi-abiertos [a,b)
-int N, A[MAXN];
-struct STN {
-	ll mx;
-	void merge(STN& L, STN& R) {
-		mx = max(L.mx, R.mx);
-	}
-	void operator=(ll a) {
-		mx = a;
-	}
-};
-STN ST[4 * MAXN];
-void STB(int id = 1, int l = 0, int r = N) {
-	if (r - l < 2) {
-		ST[id] = max_cov[l];
-		return;
-	}
-	int m = (l + r) >> 1, L = id << 1, R = L | 1;
-	STB(L, l, m); STB(R, m, r);
-	ST[id].merge(ST[L], ST[R]);
+void precompute() {
+	for (int i = 0; i < n; i++)
+		st[i][0] = max_cov[i];
+
+	for (int j = 1; j <= K; j++)
+		for (int i = 0; i + (1 << j) <= n; i++)
+			st[i][j] = max(st[i][j - 1], st[i + (1 << (j - 1))][j - 1]);
 }
-STN STQ(int x, int y, int id = 1, int l = 0, int r = N) {
-	if (x == l && y == r) return ST[id];
-	int m = (l + r) >> 1, L = id << 1, R = L | 1;
-	if (x >= m) return STQ(x, y, R, m, r);
-	if (y <= m) return STQ(x, y, L, l, m);
-	STN res, ln = STQ(x, m, L, l, m), rn = STQ(m, y, R, m, r);
-	return res.merge(ln, rn), res;
+
+ll query(int L, int R) {
+	int j = LOG[R - L + 1];
+	return max(st[L][j], st[R - (1 << j) + 1][j]);
 }
 
 void solve() {
@@ -96,14 +84,13 @@ void solve() {
 		max_cov[i] = lo + 1 - i;
 	}
 
-	N = n;
-	STB();
+	precompute();
 
 	ll ans = 0;
 	FOR(i, 0, n) {
 		ans = max(ans, max_cov[i]);
 		if ( max_r[i] + 1 < n ) {
-			ans = max(ans, max_cov[i] + STQ(max_r[i] + 1, n).mx);
+			ans = max(ans, max_cov[i] + query(max_r[i] + 1, n-1));
 		}
 	}
 
@@ -114,6 +101,11 @@ void solve() {
 int main() {
 	int t;
 	ri(t);
+
+	LOG[1] = 0;
+	for (int i = 2; i <= MAXN; i++)
+		LOG[i] = LOG[i / 2] + 1;
+
 	while (t--) {
 		solve();
 	}
