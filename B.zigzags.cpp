@@ -23,7 +23,7 @@ typedef vector<pii> vii;
 #define riii(a,b,c) scanf("%d %d %d", &a, &b, &c)
 #define rl(a) scanf("%lld", &a)
 #define rll(a,b) scanf("%lld %lld", &a, &b)
-#define FOR(i,n,m) for(int i=n; i<m; i++)
+#define FOR(i,n,m) for(register int i=n; i<m; i++)
 #define ROF(i,n,m) for(int i=n; i>m; i--)
 #define pb push_back
 #define lb lower_bound
@@ -90,7 +90,7 @@ void solve() {
 
 
 int main() {
-    int t;
+    register int t;
     ri(t);
     while (t--)
         solve();
