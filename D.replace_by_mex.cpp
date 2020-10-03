@@ -36,15 +36,59 @@ const ll LLINF = 1e18;
 const int MAXN = 1010; // CAMBIAR ESTE
 
 // GJNM
-int cnt[MAXN], a[MAXN];
+int a[MAXN];
+int n;
+
+bool bad() {
+    FOR(i, 0, n) {
+        if (a[i] != i)
+            return true;
+    }
+    return false;
+}
 
 void solve() {
-    int n; ri(n);
+    ri(n);
     FOR(i, 0, n) {
         ri(a[i]);
     }
-    
-    
+
+    vi moves;
+
+    while (bad()) {
+        vi cnt(n + 1, 0);
+        FOR(i, 0, n) {
+            cnt[a[i]]++;
+        }
+        int mex;
+        FOR(i,0,n+1){
+            if (cnt[i] == 0){
+                mex = i;
+                break;
+            }
+        }
+
+        if (mex == n) {
+            FOR(i, 0, n) {
+                if (a[i] != i) {
+                    a[i] = mex;
+                    moves.pb(i);
+                    break;
+                }
+            }
+        }
+        else {
+            a[mex] = mex;
+            moves.pb(mex);
+        }
+    }
+
+
+    printf("%zu\n", moves.size());
+    for (auto x : moves)
+        printf("%d ", x + 1);
+    printf("\n");
+
 }
 
 
