@@ -52,10 +52,10 @@ void dfs_h(int x, int f = -1) {
 }
 
 // LCA
-int l = 24; // l = log(n)
+int l = 17; // l = log(n)
 
 int timer;
-int tin[MAXN], tout[MAXN], anc[MAXN][25];
+int tin[MAXN], tout[MAXN], anc[MAXN][18];
 
 void dfs_lca(int v, int p) {
     tin[v] = ++timer;

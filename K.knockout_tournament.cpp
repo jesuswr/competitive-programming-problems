@@ -117,6 +117,7 @@ int main() {
         swap(a, b);
     }
     long double ans;
+    long double all = 0;
     for (auto n : a) {
         for (auto p : n.players) {
             if (p.F < 0)
