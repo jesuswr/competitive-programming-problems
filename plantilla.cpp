@@ -30,6 +30,7 @@ typedef vector<pii> vii;
 #define ub upper_bound
 #define F first
 #define S second
+#define all(s) s.begin(),s.end()
 
 const int INF = 0x3f3f3f3f;
 const ll LLINF = 1e18;
