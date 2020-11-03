@@ -37,45 +37,95 @@ const int MAXN = 1e5; // CAMBIAR ESTE
 const ll MOD = 4294967296ll;
 
 // GJNM
-ll all[8][8];
-ll dp[8][8];
-ll new_dp[8][8];
-pii moves[8] = {{2, 1}, {2, -1}, { -2, 1}, { -2, -1}, {1, 2}, {1, -2}, { -1, 2}, { -1, -2}};
+unsigned int G[64][64];
+
+
+const int n_states = 65;
+
+struct Matrix {
+    unsigned int mat[n_states][n_states];
+    Matrix(unsigned int val) {
+        FOR(i, 0, n_states) FOR(j, 0, n_states) {
+            mat[i][j] = val;
+        }
+    }
+    Matrix operator*(Matrix &other) {
+        Matrix ret(0);
+        FOR(k, 0, n_states) FOR(i, 0, n_states) FOR(j, 0, n_states) {
+            ret.mat[i][j] += mat[i][k] * other.mat[k][j];
+        }
+        return ret;
+    }
+};
+
+Matrix bin_exp(Matrix b, ll e) {
+    Matrix prod(0);
+    FOR(i, 0, n_states) {
+        prod.mat[i][i] = 1;
+    }
+    while (e > 0) {
+        if (e & 1)
+            prod = prod * b;
+        b = b * b;
+        e >>= 1;
+    }
+    return prod;
+}
 
 int main() {
-    int n; ri(n);
-    dp[0][0] = 1;
-    all[0][0] = 1;
+    int k; ri(k);
 
-    FOR(i, 0, n) {
-        FOR(r, 0, 8) {
-            FOR(c, 0, 8) {
-                new_dp[r][c] = 0;
-            }
-        }
-
-        FOR(r, 0, 8) {
-            FOR(c, 0, 8) {
-                FOR(m, 0, 8) {
-                    if (r + moves[m].F >= 0 && r + moves[m].F < 8 && c + moves[m].S >= 0 && c + moves[m].S < 8) {
-                        new_dp[r + moves[m].F][c + moves[m].S] += dp[r][c];
-                    }
-                }
-            }
-        }
-
-        FOR(r, 0, 8) {
-            FOR(c, 0, 8) {
-                dp[r][c] = new_dp[r][c];
-                all[r][c] += new_dp[r][c];
-            }
-        }
+    FOR(i, 0, 8) FOR(j, 0, 8) FOR(i2, 0, 8) FOR(j2, 0, 8) {
+        if (abs(i - i2) == 1 && abs(j - j2) == 2)
+            G[8 * i + j][8 * i2 + j2] = 1;
+        if (abs(i - i2) == 2 && abs(j - j2) == 1)
+            G[8 * i + j][8 * i2 + j2] = 1;
     }
-    ll sm = 0;
-    FOR(r, 0, 8) FOR(c, 0, 8) {
-        sm += all[r][c];
+
+    /* O(1) memory dp sol
+        // in dp you have the paths of current lenght
+        // in ans you have the paths of prev lenghts
+
+        unsigned int dp[64];
+        FOR(i, 0, 64) {
+            dp[i] = 0;
+        }
+        unsigned int ans = 0;
+        dp[0] = 1;
+        FOR(l, 0, k + 1) {
+            unsigned int new_dp[64];
+            FOR(i, 0, 64) {
+                new_dp[i] = 0;
+            }
+            unsigned int new_ans = 0;
+
+            FOR(i, 0, 64) FOR(j, 0, 64) {
+                new_dp[i] += dp[j] * G[j][i];
+            }
+
+            FOR(i, 0, 64) {
+                new_ans += dp[i];
+            }
+            new_ans += ans;
+
+            FOR(i, 0, 64) {
+                dp[i] = new_dp[i] * 1;
+            }
+            ans = new_ans;
+        }
+        printf("%u\n", ans);
+    */
+
+    Matrix dp(0);
+    FOR(i, 0, 64) FOR(j, 0, 64) {
+        dp.mat[i][j] = G[i][j];
     }
-    printf("%lld\n", sm);
+    FOR(i, 0, 65) {
+        dp.mat[i][64] = 1;
+    }
+
+    dp = bin_exp(dp, k + 1);
+    printf("%u\n", dp.mat[0][64]);
 
     return 0;
 }

@@ -37,42 +37,71 @@ const int MAXN = 1e5; // CAMBIAR ESTE
 const ll MOD = 1e9 + 7;
 
 // GJNM
-struct Matrix { // struct para exp de matrices
-    ll m[2][2] = {{0, 0}, {0, 0}};
-    Matrix operator *(const Matrix &other) {
-        Matrix prod;
-        FOR(i, 0, 2) FOR(j, 0, 2) FOR(k, 0, 2) {
-            prod.m[i][k] += m[i][j] * other.m[j][k];
-            prod.m[i][k] %= MOD;
+const int n_states = 2;
+
+struct Matrix {
+    ll mat[n_states][n_states];
+    Matrix(ll val) {
+        FOR(i, 0, n_states) FOR(j, 0, n_states) {
+            mat[i][j] = val;
         }
-        return prod;
+    }
+    Matrix operator*(Matrix &other) {
+        Matrix ret(0);
+        FOR(k, 0, n_states) FOR(i, 0, n_states) FOR(j, 0, n_states) {
+            ret.mat[i][j] += mat[i][k] * other.mat[k][j];
+            ret.mat[i][j] %= 1000000007;
+        }
+        return ret;
     }
 };
 
-Matrix bin_pow(Matrix x, ll k) {
-    Matrix prod;
-    FOR(i, 0, 2) {
-        prod.m[i][i] = 1;
+Matrix bin_exp(Matrix b, ll e) {
+    Matrix prod(0);
+    FOR(i, 0, n_states) {
+        prod.mat[i][i] = 1;
     }
-    while (k > 0) {
-        if (k & 1) {
-            prod = prod * x;
-        }
-        x = x * x;
-        k >>= 1;
+    while (e > 0) {
+        if (e & 1)
+            prod = prod * b;
+        b = b * b;
+        e >>= 1;
     }
     return prod;
 }
 
+
+
 int main() {
     ll n; rl(n);
-    Matrix x;
-    x.m[0][0] = 19;
-    x.m[0][1] = 6;
-    x.m[1][0] = 7;
-    x.m[1][1] = 20;
-    x = bin_pow(x, n);
-    printf("%lld\n", x.m[0][0]);
+
+    /* O(1) memory dp
+    ll happy = 1;
+    ll sad = 0;
+    FOR(i, 0, n) {
+        ll new_happy = 0;
+        ll new_sad = 0;
+
+        new_happy += happy * 19;
+        new_happy += sad * 6;
+
+        new_sad += sad * 20;
+        new_sad += happy * 7;
+
+        happy = new_happy;
+        sad = new_sad;
+    }
+    printf("%lld\n", happy % 1000000007);
+    */
+
+    Matrix dp(0);
+    dp.mat[0][0] = 19;
+    dp.mat[0][1] = 7;
+    dp.mat[1][0] = 6;
+    dp.mat[1][1] = 20;
+
+    dp = bin_exp(dp, n);
+    printf("%lld\n", dp.mat[0][0]);
 
     return 0;
 }

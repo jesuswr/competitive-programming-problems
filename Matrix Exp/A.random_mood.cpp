@@ -36,43 +36,73 @@ const ll LLINF = 1e18;
 const int MAXN = 1e5; // CAMBIAR ESTE
 
 // GJNM
-struct Matrix {
-    long double m[2][2] = {{0, 0}, {0, 0}};
+const int n_states = 2;
 
-    Matrix operator *(const Matrix &other) {
-        Matrix prod;
-        FOR(i, 0, 2) FOR(j, 0, 2) FOR(k, 0, 2) {
-            prod.m[i][k] += m[i][j] * other.m[j][k];
+struct Matrix {
+    double mat[n_states][n_states];
+    Matrix(double val) {
+        FOR(i, 0, n_states) FOR(j, 0, n_states) {
+            mat[i][j] = val;
         }
-        return prod;
+    }
+    Matrix operator*(Matrix &other) {
+        Matrix ret(0);
+        FOR(k, 0, n_states) FOR(i, 0, n_states) FOR(j, 0, n_states) {
+            ret.mat[i][j] += mat[i][k] * other.mat[k][j];
+        }
+        return ret;
     }
 };
 
-Matrix bin_pow(Matrix x, int k) {
-    Matrix prod;
-    FOR(i, 0, 2) {
-        prod.m[i][i] = 1;
+Matrix bin_exp(Matrix b, int e) {
+    Matrix prod(0);
+    FOR(i, 0, n_states) {
+        prod.mat[i][i] = 1;
     }
-    while (k > 0) {
-        if (k & 1) {
-            prod = prod * x;
-        }
-        x = x * x;
-        k >>= 1;
+    while (e > 0) {
+        if (e & 1)
+            prod = prod * b;
+        b = b * b;
+        e >>= 1;
     }
     return prod;
 }
 
+
 int main() {
-    int n;
-    long double p;
-    scanf("%d %Lf", &n, &p);
-    Matrix x;
-    x.m[0][0] = 1 - p;
-    x.m[0][1] = p;
-    x.m[1][0] = p;
-    x.m[1][1] = 1 - p;
-    x = bin_pow(x, n);
-    printf("%.7Lf\n", x.m[0][0]);
+    int n; double p;
+    scanf("%d %lF", &n, &p);
+
+    // O(1) memory dp solution
+    /*
+    double happy = 1;
+    double sad = 0;
+
+    FOR(i, 0, n) {
+        double new_happy = 0;
+        double new_sad = 0;
+
+        new_happy += happy * (1 - p);
+        new_happy += sad * p;
+
+        new_sad += happy * p;
+        new_sad += sad * (1 - p);
+
+        happy = new_happy;
+        sad = new_sad;
+    }
+    printf("%lF\n", happy);
+    */
+
+    Matrix dp(0);
+
+    dp.mat[0][0] = (1 - p);
+    dp.mat[0][1] = p;
+    dp.mat[1][0] = p;
+    dp.mat[1][1] = (1 - p);
+
+    dp = bin_exp(dp, n);
+    printf("%lF\n", dp.mat[0][0]);
+
     return 0;
 }

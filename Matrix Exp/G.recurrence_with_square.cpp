@@ -30,6 +30,7 @@ typedef vector<pii> vii;
 #define ub upper_bound
 #define F first
 #define S second
+#define all(s) s.begin(),s.end()
 
 const int INF = 0x3f3f3f3f;
 const ll LLINF = 1e18;
@@ -37,9 +38,9 @@ const int MAXN = 1e5; // CAMBIAR ESTE
 const ll mod = 1e9 + 7;
 
 // GJNM
-int G[100][100];
-
-const int n_states = 100;
+int n; ll k;
+const int n_states = 13;
+ll a[10], c[10], p, q, r;
 
 struct Matrix {
     ll mat[n_states][n_states];
@@ -74,51 +75,96 @@ Matrix bin_exp(Matrix b, ll e) {
 
 
 
+
+
 int main() {
-    int n, m, k;
-    riii(n, m, k);
-    FOR(i, 0, m) {
-        int a, b; rii(a, b);
-        G[a - 1][b - 1] = 1;
-    }
-
-    /* O(1) memory dp sol
-    int dp[100];
+    scanf("%d %lld", &n, &k);
     FOR(i, 0, n) {
-        dp[i] = 1;
+        rl(a[i]);
     }
-    FOR(_, 0, k) {
-        int new_dp[100];
-        FOR(i, 0, 100) {
-            new_dp[i] = 0;
-        }
+    FOR(i, 0, n) {
+        rl(c[i]);
+    }
+    rl(p), rll(q, r);
 
-        FOR(i, 0, n) FOR(j, 0, n) {
-            new_dp[i] += dp[j] * G[j][i];
-        }
 
+    /* O(1) memory dp solution
+        ll dp[13];
         FOR(i, 0, n) {
-            dp[i] = new_dp[i];
+            dp[i] = a[i];
         }
-    }
-    int ans = 0;
-    FOR(i, 0, n) {
-        ans += dp[i];
-    }
-    printf("%d\n", ans);
+        dp[10] = 1; // to add p
+        dp[11] = n;
+        dp[12] = n * n;
+
+        FOR(_, 0, k) {
+            ll new_dp[13];
+            FOR(i, 0, 13) {
+                new_dp[i] = 0;
+            }
+
+            FOR(i, 0, n - 1) {
+                new_dp[i] += dp[i + 1] * 1;
+            }
+
+            FOR(i, 0, n) {
+                new_dp[n - 1] += dp[n - 1 - i] * c[i];
+            }
+
+            new_dp[n - 1] += dp[10] * p;
+            new_dp[n - 1] += dp[11] * q;
+            new_dp[n - 1] += dp[12] * r;
+
+            new_dp[10] += dp[10] * 1;
+
+            new_dp[11] += dp[11] * 1;
+            new_dp[11] += dp[10] * 1;
+
+            new_dp[12] += dp[12] * 1;
+            new_dp[12] += dp[11] * 2;
+            new_dp[12] += dp[10] * 1;
+
+            FOR(i, 0, 13) {
+                dp[i] = new_dp[i];
+            }
+        }
+
+        printf("%lld\n", dp[0]);
     */
 
     Matrix dp(0);
-    FOR(i, 0, n) FOR(j, 0, n) {
-        dp.mat[i][j] = G[i][j];
+    FOR(i, 0, n - 1) {
+        dp.mat[i + 1][i] = 1;
     }
+    FOR(i, 0, n) {
+        dp.mat[n - 1 - i][n - 1] = c[i];
+    }
+
+    dp.mat[10][n - 1] = p;
+    dp.mat[11][n - 1] = q;
+    dp.mat[12][n - 1] = r;
+
+    dp.mat[10][10] = 1;
+
+    dp.mat[11][11] = 1;
+    dp.mat[10][11] = 1;
+
+    dp.mat[12][12] = 1;
+    dp.mat[11][12] = 2;
+    dp.mat[10][12] = 1;
+
     dp = bin_exp(dp, k);
+
     ll ans = 0;
-    FOR(i, 0, n) FOR(j, 0, n) {
-        ans += dp.mat[i][j];
-        if (ans >= mod)
-            ans -= mod;
+    FOR(i, 0, n) {
+        ans = (ans + a[i] * dp.mat[i][0]) % mod;
     }
+    ans = (ans + 1 * dp.mat[10][0]) % mod;
+    ans = (ans + n * dp.mat[11][0]) % mod;
+    ans = (ans + n * n * dp.mat[12][0]) % mod;
+
+
     printf("%lld\n", ans);
+
     return 0;
 }
