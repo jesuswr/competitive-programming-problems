@@ -13,8 +13,8 @@
 using namespace std;
 
 typedef long long ll;
-typedef pair<int,int> pii;
-typedef pair<int,pair<int,int>> piii;
+typedef pair<int, int> pii;
+typedef pair<int, pair<int, int>> piii;
 typedef vector<int> vi;
 typedef vector<pii> vii;
 
@@ -30,7 +30,8 @@ typedef vector<pii> vii;
 #define ub upper_bound
 #define F first
 #define S second
-#define all(s) s.begin(),s.end()
+#define ALL(s) s.begin(),s.end()
+#define SZ(s) (int)s.size()
 
 const int INF = 0x3f3f3f3f;
 const ll LLINF = 1e18;
@@ -38,7 +39,7 @@ const int MAXN = 1e5; // CAMBIAR ESTE
 
 // GJNM
 
-int main(){
+int main() {
 
     return 0;
 }
