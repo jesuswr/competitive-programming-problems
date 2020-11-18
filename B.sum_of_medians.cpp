@@ -9,7 +9,6 @@
 #include <set>
 #include <map>
 #include <unordered_map>
-#include <assert.h>
 
 using namespace std;
 
@@ -19,13 +18,11 @@ typedef pair<int, pair<int, int>> piii;
 typedef vector<int> vi;
 typedef vector<pii> vii;
 
-int dadsadasda;
-
-#define ri(a) dadsadasda=scanf("%d", &a)
-#define rii(a,b) dadsadasda=scanf("%d %d", &a, &b)
-#define riii(a,b,c) dadsadasda=scanf("%d %d %d", &a, &b, &c)
-#define rl(a) dadsadasda=scanf("%lld", &a)
-#define rll(a,b) dadsadasda=scanf("%lld %lld", &a, &b)
+#define ri(a) scanf("%d", &a)
+#define rii(a,b) scanf("%d %d", &a, &b)
+#define riii(a,b,c) scanf("%d %d %d", &a, &b, &c)
+#define rl(a) scanf("%lld", &a)
+#define rll(a,b) scanf("%lld %lld", &a, &b)
 #define FOR(i,n,m) for(int i=n; i<m; i++)
 #define ROF(i,n,m) for(int i=n; i>m; i--)
 #define pb push_back
@@ -38,11 +35,35 @@ int dadsadasda;
 
 const int INF = 0x3f3f3f3f;
 const ll LLINF = 1e18;
-const int MAXN = 1e5; // CAMBIAR ESTE
+const int MAXN = 1e6 + 10; // CAMBIAR ESTE
 
 // GJNM
+ll a[MAXN];
+
+void solve() {
+    int n, k; rii(n, k);
+    FOR(i, 0, n * k) {
+        rl(a[i]);
+    }
+    ll ans = 0;
+    int need = n / 2;
+    int end = k * n;
+    for (int i = end - 1; i >= 0 && k > 0; i--) {
+        if (need > 0)
+            need--;
+        else {
+            ans += a[i];
+            need = n / 2;
+            k--;
+        }
+    }
+    printf("%lld\n", ans);
+}
 
 int main() {
-
+    int t;
+    ri(t);
+    while (t--)
+        solve();
     return 0;
 }
