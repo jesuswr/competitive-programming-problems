@@ -1,6 +1,6 @@
 listita
-txt.txt
-a.out
+*.txt
+*.out
 aux.cpp
 interactive_runner-1.py
 local_testing_tool.py
