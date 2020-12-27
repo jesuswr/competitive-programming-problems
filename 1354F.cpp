@@ -38,30 +38,41 @@ int dadsadasda;
 
 const int INF = 0x3f3f3f3f;
 const ll LLINF = 1e18;
-const int MAXN = 1010; // CAMBIAR ESTE
+const int MAXN = 1e5; // CAMBIAR ESTE
 
 // GJNM
-int N;
-int A[MAXN];
-int DP[MAXN][MAXN], DP2[MAXN];
 
-int f(int l, int r) {
-    if (DP[l][r] != 0) return DP[l][r];
-    if (l == r - 1) return A[l];
 
-    FOR(m, l + 1, r) {
-        int lf = f(l, m), rf = f(m, r);
-        if (lf == rf && lf > 0) return DP[l][r] = lf + 1;
+void solve() {
+    int n; ri(n);
+    vi a(n), b(n);
+    FOR(i, 0, n) ri(a[i]);
+    FOR(i, 0, n) ri(b[i]);
+    multiset<pii> A, B;
+
+    if ((n & 1) && a[n >> 1] != b[n >> 1]) {
+        printf("no\n");
+        return;
     }
-    return DP[l][r] = -1;
+
+    int l = 0, r = n - 1;
+    while (l < r) {
+        pii x = {min(a[l], a[r]), max(a[l], a[r])};
+        pii y = {min(b[l], b[r]), max(b[l], b[r])};
+        A.insert(x);
+        B.insert(y);
+        l++, r--;
+    }
+    if (A == B)
+        printf("yEs\n");
+    else
+        printf("nO\n");
 }
 
-int main() {
-    ri(N);
-    FOR(i, 0, N) ri(A[i]);
-    FOR(i, 1, N + 1) DP2[i] = INF;
 
-    FOR(i, 0, N) FOR(j, i + 1, N + 1) if (f(i, j) > 0) DP2[j] = min(DP2[j], DP2[i] + 1);
-    printf("%d\n", DP2[N]);
+
+int main() {
+    int t; ri(t);
+    while (t--) solve();
     return 0;
 }

@@ -38,30 +38,43 @@ int dadsadasda;
 
 const int INF = 0x3f3f3f3f;
 const ll LLINF = 1e18;
-const int MAXN = 1010; // CAMBIAR ESTE
+const int MAXN = 2e5; // CAMBIAR ESTE
 
 // GJNM
-int N;
-int A[MAXN];
-int DP[MAXN][MAXN], DP2[MAXN];
+int N, W;
+int A[MAXN], B[MAXN];
 
-int f(int l, int r) {
-    if (DP[l][r] != 0) return DP[l][r];
-    if (l == r - 1) return A[l];
-
-    FOR(m, l + 1, r) {
-        int lf = f(l, m), rf = f(m, r);
-        if (lf == rf && lf > 0) return DP[l][r] = lf + 1;
+vi pf(const vi &s) {
+    int n = SZ(s);
+    vi pi(n);
+    FOR(i, 1, n) {
+        int j = pi[i - 1];
+        while (j > 0 && s[i] != s[j]) j = pi[j - 1];
+        if (s[i] == s[j]) pi[i] = j + 1;
     }
-    return DP[l][r] = -1;
+    return pi;
+}
+
+int kmp(const vi &s) {
+    vi pi = pf(s);
+    int cnt = 0;
+    FOR(i, W + 1, SZ(pi)) cnt += (pi[i] == W);
+    return cnt;
 }
 
 int main() {
-    ri(N);
+    rii(N, W);
     FOR(i, 0, N) ri(A[i]);
-    FOR(i, 1, N + 1) DP2[i] = INF;
-
-    FOR(i, 0, N) FOR(j, i + 1, N + 1) if (f(i, j) > 0) DP2[j] = min(DP2[j], DP2[i] + 1);
-    printf("%d\n", DP2[N]);
+    FOR(i, 0, W) ri(B[i]);
+    if (W == 1) {
+        printf("%d\n", N);
+        return 0;
+    }
+    vi t;
+    FOR(i, 0, W - 1) t.pb(B[i + 1] - B[i]);
+    t.pb(1e9 + 10);
+    FOR(i, 0, N - 1) t.pb(A[i + 1] - A[i]);
+    W--; N--;
+    printf("%d\n", kmp(t));
     return 0;
 }
