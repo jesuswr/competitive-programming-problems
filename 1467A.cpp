@@ -38,46 +38,27 @@ int dadsadasda;
 
 const int INF = 0x3f3f3f3f;
 const ll LLINF = 1e18;
-const int MAXN = 2e5 + 10; // CAMBIAR ESTE
+const int MAXN = 1e5; // CAMBIAR ESTE
 
 // GJNM
-int N;
-string S;
-string SR;
-queue<int> Q[MAXN];
-int TO[MAXN];
-
-ll BIT[MAXN];
-// suma de rangos [0,n-1]
-void updBIT(int p, ll val) {
-    p++;    // esto es porque el bit esta indexado desde 1
-    for (; p < N + 2; p += p & -p) // se puede cambiar maxN por n+1 si hace falta mas velocidad
-        BIT[p] += val;
-}
-ll sumBIT(int p) {
-    p++;
-    ll ret = 0;
-    for (; p; p -= p & -p)
-        ret += BIT[p];
-    return ret;
-}
 
 int main() {
-    ri(N);
-    cin >> S; SR = S;
-    reverse(ALL(SR));
-    FOR(i, 0, N) Q[S[i] - 'a'].push(i);
-    
-    FOR(i, 0, N) {
-        TO[ Q[SR[i] - 'a'].front() ] = i;
-        Q[SR[i] - 'a'].pop();
+    int t; ri(t);
+    while (t--) {
+        int n; ri(n);
+        if (n == 1) printf("9\n");
+        else if (n == 2) printf("98\n");
+        else {
+            printf("98");
+            int start = 9;
+            FOR(_, 2, n) {
+                printf("%d", start);
+                start = (start + 1) % 10;
+            }
+            printf("\n");
+        }
+
     }
 
-    ll ans = 0;
-    FOR(i, 0, N) {
-        ans += sumBIT(N) - sumBIT(TO[i]);
-        updBIT(TO[i], 1);
-    }
-    printf("%lld\n", ans);
     return 0;
 }

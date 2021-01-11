@@ -38,46 +38,38 @@ int dadsadasda;
 
 const int INF = 0x3f3f3f3f;
 const ll LLINF = 1e18;
-const int MAXN = 2e5 + 10; // CAMBIAR ESTE
+const int MAXN = 3e5 + 10; // CAMBIAR ESTE
 
 // GJNM
-int N;
-string S;
-string SR;
-queue<int> Q[MAXN];
-int TO[MAXN];
+int N[3];
+ll A[3][MAXN];
+ll S[3];
 
-ll BIT[MAXN];
-// suma de rangos [0,n-1]
-void updBIT(int p, ll val) {
-    p++;    // esto es porque el bit esta indexado desde 1
-    for (; p < N + 2; p += p & -p) // se puede cambiar maxN por n+1 si hace falta mas velocidad
-        BIT[p] += val;
-}
-ll sumBIT(int p) {
-    p++;
-    ll ret = 0;
-    for (; p; p -= p & -p)
-        ret += BIT[p];
-    return ret;
+ll f(int x) {
+    FOR(i, 0, 3) {
+        if (i == x) continue;
+        if (N[i] == 1) return -LLINF;
+    }
+
+    ll tot = S[x];
+    FOR(i, 0, 3) {
+        if (i == x) continue;
+        tot += S[i] - 2 * A[i][0];
+    }
+    return tot;
 }
 
 int main() {
-    ri(N);
-    cin >> S; SR = S;
-    reverse(ALL(SR));
-    FOR(i, 0, N) Q[S[i] - 'a'].push(i);
-    
-    FOR(i, 0, N) {
-        TO[ Q[SR[i] - 'a'].front() ] = i;
-        Q[SR[i] - 'a'].pop();
-    }
-
+    FOR(i, 0, 3) ri(N[i]);
+    FOR(i, 0, 3) FOR(j, 0, N[i]) rl(A[i][j]);
+    FOR(i, 0, 3) sort(A[i], A[i] + N[i]);
+    FOR(i, 0, 3) FOR(j, 0, N[i]) S[i] += A[i][j];
     ll ans = 0;
-    FOR(i, 0, N) {
-        ans += sumBIT(N) - sumBIT(TO[i]);
-        updBIT(TO[i], 1);
+    FOR(i, 0, 3) FOR(j, 0, 3) FOR(k, 0, 3) {
+        if (i == j || j == k || i == k) continue;
+        ans = max(ans, S[i] + S[j] - S[k]);
     }
+    FOR(i, 0, 3) ans = max(ans, f(i));
     printf("%lld\n", ans);
     return 0;
 }
