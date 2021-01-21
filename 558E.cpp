@@ -38,80 +38,86 @@ int dadsadasda;
 
 const int INF = 0x3f3f3f3f;
 const ll LLINF = 1e18;
-const int MAXN = 1e5 + 10; // CAMBIAR ESTE
+const int MAXN = 1e5; // CAMBIAR ESTE
 
 // GJNM
+
 // Todos los rangos son semi-abiertos [a,b)
-int N;
-char A[MAXN];
+int N, Q;
 struct STN {
-    int cnt[30];
+    int val;
     void merge(STN& L, STN& R) {
-        FOR(i, 0, 30) cnt[i] = L.cnt[i] + R.cnt[i];
-    }
-    void operator=(int a) {
-        FOR(i, 0, 30) cnt[i] = i == a;
+        val = L.val + R.val;
     }
 };
-STN ST[4 * MAXN];
-vii lzy[4 * MAXN];
-void STB(int id = 1, int l = 0, int r = N) {
-    if (r - l < 2) {
-        ST[id] = A[l] - 'a';
-        return;
+
+struct STLZY {
+    vector<STN> ST;
+    vector<int> lzy;
+    STLZY() {
+        ST.resize(4 * N);
+        lzy.resize(4 * N);
+        FOR(i, 0, 4 * N) lzy[i] = -1;
     }
-    int m = (l + r) >> 1, L = id << 1, R = L | 1;
-    STB(L, l, m); STB(R, m, r);
-    ST[id].merge(ST[L], ST[R]);
-}
-void shift(int id, int l, int r);
-// Actualiza el nodo y guarda en lazy
-void upd(int id, int l, int r, vii &x) {
-    shift(id, l, r);
-}
-// Propaga el update en lazy
-void shift(int id, int l, int r) {
-    if (lzy[id].empty()) return;
-    int m = (l + r) >> 1, L = id << 1, R = L | 1;
-    int need = m - l;
-    vii aux1, aux2;
-    for (auto p : lzy[id]) {
-        if (p.S == 0) continue;
-        if (need > 0) {
-            int aux = min(need, p.S);
-            need -= aux;
-            p.S -= aux;
-            aux1.pb({p.F, aux});
+
+    // Actualiza el nodo y guarda en lazy
+    void upd(int id, int l, int r, int x) {
+        lzy[id] = x;
+        ST[id].val = (r - l) * x;
+    }
+    // Propaga el update en lazy
+    void shift(int id, int l, int r) {
+        int m = (l + r) >> 1, L = id << 1, R = L | 1;
+        upd(L, l, m, lzy[id]);
+        upd(R, m, r, lzy[id]);
+        lzy[id] = -1;
+    }
+    STN STQ(int x, int y, int id = 1, int l = 0, int r = N) {
+        if (x == l && y == r) return ST[id];
+        if (lzy[id] != -1) shift(id, l, r);
+        int m = (l + r) >> 1, L = id << 1, R = L | 1;
+        if (x >= m) return STQ(x, y, R, m, r);
+        if (y <= m) return STQ(x, y, L, l, m);
+        STN res, ln = STQ(x, m, L, l, m), rn = STQ(m, y, R, m, r);
+        return res.merge(ln, rn), res;
+    }
+    void STU(int x, int y, int v = 1, int id = 1, int l = 0, int r = N) {
+        if (x >= r || y <= l) return;
+        if (x <= l && y >= r) {
+            upd(id, l, r, v);
+            return;
         }
+        if (lzy[id] != -1) shift(id, l, r);
+        int m = (l + r) >> 1, L = id << 1, R = L | 1;
+        STU(x, y, v, L, l, m);
+        STU(x, y, v, R, m, r);
+        ST[id].merge(ST[L], ST[R]);
     }
-    upd(L, l, m, lzy[id]);
-    upd(R, m, r, lzy[id]);
-    lzy[id].clear();
-}
-STN STQ(int x, int y, int id = 1, int l = 0, int r = N) {
-    if (x == l && y == r) return ST[id];
-    shift(id, l, r);
-    int m = (l + r) >> 1, L = id << 1, R = L | 1;
-    if (x >= m) return STQ(x, y, R, m, r);
-    if (y <= m) return STQ(x, y, L, l, m);
-    STN res, ln = STQ(x, m, L, l, m), rn = STQ(m, y, R, m, r);
-    return res.merge(ln, rn), res;
-}
-void STU(int x, int y, vii &v, int id = 1, int l = 0, int r = N) {
-    if (x >= r || y <= l) return;
-    if (x <= l && y >= r) {
-        upd(id, l, r, v);
-        return;
-    }
-    shift(id, l, r);
-    int m = (l + r) >> 1, L = id << 1, R = L | 1;
-    STU(x, y, v, L, l, m);
-    STU(x, y, v, R, m, r);
-    ST[id].merge(ST[L], ST[R]);
-}
+};
 
 int main() {
-    ri(N);
-    scanf("%s", A);
+    rii(N, Q);
+    vector<STLZY> st(26);
+    string s;
+    cin >> s;
+    FOR(i, 0, SZ(s)) st[s[i] - 'a'].STU(i, i + 1);
+    while (Q--) {
+        int l, r, k; riii(l, r, k); l--;
+        vector<pair<char, int>> cnt;
+        for (char c = 'a'; c <= 'z'; c++) cnt.pb({c, st[c - 'a'].STQ(l, r).val});
+        for (char c = 'a'; c <= 'z'; c++) st[c - 'a'].STU(l, r, 0);
+        if (k == 0) reverse(ALL(cnt));
+        for (auto p : cnt) {
+            if (p.S == 0) continue;
+            st[p.F - 'a'].STU(l, l + p.S);
+            l += p.S;
+        }
+    }
+    FOR(i, 0, N) FOR(c, 0, 26) {
+        int x = st[c].STQ(i, i + 1).val;
+        if (x == 1) printf("%c", c + 'a');
+    }
+    printf("\n");
+
     return 0;
 }
