@@ -10,6 +10,7 @@
 #include <map>
 #include <unordered_map>
 #include <assert.h>
+#include <deque>
 
 using namespace std;
 
@@ -38,31 +39,39 @@ int dadsadasda;
 
 const int INF = 0x3f3f3f3f;
 const ll LLINF = 1e18;
-const int MAXN = 1e5; // CAMBIAR ESTE
-const ll MOD = 998244353;
+const int MAXN = 2e5 + 10; // CAMBIAR ESTE
 
 // GJNM
-ll N, M, L, R;
+int N, M;
+ll A[MAXN], B[MAXN];
 
-ll bpow(ll b, ll e) {
-    ll ret = 1;
-    while (e > 0) {
-        if (e & 1) ret = (ret * b) % MOD;
-
-        b = (b * b) % MOD;
-        e >>= 1;
+bool valid(ll t) {
+    FOR(i, 1, N + 1) B[i] = A[i];
+    int j = N;
+    FOR(i, 0, M) {
+        ll curr_t = t;
+        while (j >= 1 && B[j] == 0) j--;
+        curr_t -= j;
+        while (curr_t > 0 && j >= 1) {
+            while (j >= 1 && B[j] == 0) j--;
+            ll can_take = max(0ll, min(curr_t, B[j]));
+            curr_t -= can_take;
+            B[j] -= can_take;
+        }
     }
-    return ret;
+    FOR(i, 1, N + 1) if (B[i] != 0) return false;
+    return true;
 }
 
 int main() {
-    rll(N, M), rll(L, R);
-    if (N & M & 1)
-        printf("%lld\n", bpow(R - L + 1, N * M));
-    else if (~(R - L + 1) & 1)
-        printf("%lld\n", ( bpow(R - L + 1, N * M) * bpow(2, MOD - 2) ) % MOD);
-    else
-        printf("%lld\n", ((bpow(R - L + 1, N * M) + 1) * bpow(2, MOD - 2) ) % MOD);
-
+    rii(N, M);
+    FOR(i, 0, N) rl(A[i + 1]);
+    ll lo = 0, hi = 2e14;
+    while (lo < hi) {
+        ll mi = lo + (hi - lo) / 2;
+        if (valid(mi)) hi = mi;
+        else lo = mi + 1;
+    }
+    printf("%lld\n", lo);
     return 0;
 }

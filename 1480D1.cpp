@@ -38,31 +38,39 @@ int dadsadasda;
 
 const int INF = 0x3f3f3f3f;
 const ll LLINF = 1e18;
-const int MAXN = 1e5; // CAMBIAR ESTE
-const ll MOD = 998244353;
+const int MAXN = 1e5 + 10; // CAMBIAR ESTE
 
 // GJNM
-ll N, M, L, R;
-
-ll bpow(ll b, ll e) {
-    ll ret = 1;
-    while (e > 0) {
-        if (e & 1) ret = (ret * b) % MOD;
-
-        b = (b * b) % MOD;
-        e >>= 1;
-    }
-    return ret;
-}
+int N;
+int A[MAXN];
+queue<int> Q[MAXN];
 
 int main() {
-    rll(N, M), rll(L, R);
-    if (N & M & 1)
-        printf("%lld\n", bpow(R - L + 1, N * M));
-    else if (~(R - L + 1) & 1)
-        printf("%lld\n", ( bpow(R - L + 1, N * M) * bpow(2, MOD - 2) ) % MOD);
-    else
-        printf("%lld\n", ((bpow(R - L + 1, N * M) + 1) * bpow(2, MOD - 2) ) % MOD);
-
+    ri(N);
+    FOR(i, 0, N) {
+        ri(A[i]);
+        Q[A[i]].push(i);
+    }
+    FOR(i, 1, N + 1) Q[A[i]].push(INF);
+    int lst[2] = {0, 0};
+    int ans = 0;
+    FOR(i, 0, N) {
+        Q[A[i]].pop();
+        if (A[i] == lst[0] && A[i] == lst[1]) continue;
+        if (A[i] == lst[0]) {
+            lst[1] = A[i];
+            ++ans;
+        }
+        else if (A[i] == lst[1]) {
+            lst[0] = A[i];
+            ++ans;
+        }
+        else {
+            if (Q[lst[0]].front() < Q[lst[1]].front()) lst[0] = A[i];
+            else lst[1] = A[i];
+            ++ans;
+        }
+    }
+    printf("%d\n", ans);
     return 0;
 }

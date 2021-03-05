@@ -39,30 +39,38 @@ int dadsadasda;
 const int INF = 0x3f3f3f3f;
 const ll LLINF = 1e18;
 const int MAXN = 1e5; // CAMBIAR ESTE
-const ll MOD = 998244353;
 
 // GJNM
-ll N, M, L, R;
-
-ll bpow(ll b, ll e) {
-    ll ret = 1;
-    while (e > 0) {
-        if (e & 1) ret = (ret * b) % MOD;
-
-        b = (b * b) % MOD;
-        e >>= 1;
-    }
-    return ret;
-}
+string S[3];
+int CNT[3][26];
 
 int main() {
-    rll(N, M), rll(L, R);
-    if (N & M & 1)
-        printf("%lld\n", bpow(R - L + 1, N * M));
-    else if (~(R - L + 1) & 1)
-        printf("%lld\n", ( bpow(R - L + 1, N * M) * bpow(2, MOD - 2) ) % MOD);
-    else
-        printf("%lld\n", ((bpow(R - L + 1, N * M) + 1) * bpow(2, MOD - 2) ) % MOD);
-
+    cin >> S[0] >> S[1] >> S[2];
+    FOR(i, 0, 3) for (auto c : S[i]) ++CNT[i][c - 'a'];
+    int mx1 = 0, mx2 = 0;
+    FOR(i, 0, SZ(S[0]) + 1) {
+        bool brk = false;
+        FOR(j, 0, 26) if (CNT[1][j] * i > CNT[0][j]) brk = true;
+        if (brk) break;
+        vi cnt(26);
+        FOR(j, 0, 26) cnt[j] = CNT[0][j] - CNT[1][j] * i;
+        int mn = INF;
+        FOR(j, 0, 26) if (CNT[2][j] > 0) mn = min(mn, cnt[j] / CNT[2][j]);
+        if (mx1 + mx2 < i + mn) {
+            mx1 = i;
+            mx2 = mn;
+        }
+    }
+    string ans;
+    FOR(_, 0, mx1) ans += S[1];
+    FOR(_, 0, mx2) ans += S[2];
+    FOR(i, 0, 26) CNT[0][i] -= CNT[1][i] * mx1 + CNT[2][i] * mx2;
+    FOR(i, 0, 26) {
+        while (CNT[0][i] > 0) {
+            --CNT[0][i];
+            ans += (i + 'a');
+        }
+    }
+    cout << ans << endl;
     return 0;
 }

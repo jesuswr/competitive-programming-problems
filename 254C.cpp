@@ -10,6 +10,7 @@
 #include <map>
 #include <unordered_map>
 #include <assert.h>
+#include <fstream>
 
 using namespace std;
 
@@ -39,30 +40,55 @@ int dadsadasda;
 const int INF = 0x3f3f3f3f;
 const ll LLINF = 1e18;
 const int MAXN = 1e5; // CAMBIAR ESTE
-const ll MOD = 998244353;
 
 // GJNM
-ll N, M, L, R;
+string A, B;
+int CNTA[3000], CNTB[3000];
 
-ll bpow(ll b, ll e) {
-    ll ret = 1;
-    while (e > 0) {
-        if (e & 1) ret = (ret * b) % MOD;
-
-        b = (b * b) % MOD;
-        e >>= 1;
-    }
+int get_sm() {
+    int ret = 0;
+    for (int i = 25; i >= 0; --i) if (CNTB[i] > CNTA[i]) ret = i;
     return ret;
 }
 
 int main() {
-    rll(N, M), rll(L, R);
-    if (N & M & 1)
-        printf("%lld\n", bpow(R - L + 1, N * M));
-    else if (~(R - L + 1) & 1)
-        printf("%lld\n", ( bpow(R - L + 1, N * M) * bpow(2, MOD - 2) ) % MOD);
-    else
-        printf("%lld\n", ((bpow(R - L + 1, N * M) + 1) * bpow(2, MOD - 2) ) % MOD);
+    ifstream cin("input.txt");
+    ofstream cout("output.txt");
+    cin >> A;
+    cin >> B;
+    for (auto c : A) ++CNTA[c - 'A'];
+    for (auto c : B) ++CNTB[c - 'A'];
+
+    int cnt = 0;
+    FOR(i, 0, SZ(A)) {
+        int c = A[i] - 'A';
+        if (CNTA[c] <= CNTB[c]) {
+            --CNTA[c];
+            --CNTB[c];
+        }
+        else if (CNTB[c] == 0) {
+            int sm = get_sm();
+            A[i] = sm + 'A';
+            ++cnt;
+            --CNTA[c];
+            --CNTB[sm];
+        }
+        else {
+            int sm = get_sm();
+            if (sm < c) {
+                A[i] = sm + 'A';
+                ++cnt;
+                --CNTB[sm];
+                --CNTA[c];
+            }
+            else {
+                --CNTB[c];
+                --CNTA[c];
+            }
+        }
+    }
+    cout << cnt << endl;
+    cout << A << endl;
 
     return 0;
 }

@@ -39,30 +39,51 @@ int dadsadasda;
 const int INF = 0x3f3f3f3f;
 const ll LLINF = 1e18;
 const int MAXN = 1e5; // CAMBIAR ESTE
-const ll MOD = 998244353;
 
 // GJNM
-ll N, M, L, R;
+int N, M;
+ll DP[1 << 18][100];
+bool VIS[1 << 18][100];
+ll TEN[20];
+ll A[20];
 
-ll bpow(ll b, ll e) {
-    ll ret = 1;
-    while (e > 0) {
-        if (e & 1) ret = (ret * b) % MOD;
+int MSK[10];
+vi INDS[10];
 
-        b = (b * b) % MOD;
-        e >>= 1;
+
+ll f(int msk, int mod, int p = N - 1) {
+    if (msk == (1 << N) - 1) return mod == 0;
+    if (VIS[msk][mod]) return DP[msk][mod];
+    VIS[msk][mod] = true;
+    ll &ret = DP[msk][mod] = 0;
+    FOR(i, p == N - 1, 10) {
+        if ((MSK[i] & msk) == MSK[i]) continue;
+        for (auto j : INDS[i]) {
+            if (msk & (1 << j)) continue;
+            ret += f(msk | (1 << j), (mod + TEN[p] * i) % M, p - 1);
+            break;
+        }
     }
     return ret;
 }
 
 int main() {
-    rll(N, M), rll(L, R);
-    if (N & M & 1)
-        printf("%lld\n", bpow(R - L + 1, N * M));
-    else if (~(R - L + 1) & 1)
-        printf("%lld\n", ( bpow(R - L + 1, N * M) * bpow(2, MOD - 2) ) % MOD);
-    else
-        printf("%lld\n", ((bpow(R - L + 1, N * M) + 1) * bpow(2, MOD - 2) ) % MOD);
-
+    {
+        TEN[0] = 1;
+        FOR(i, 1, 19) TEN[i] = 10ll * TEN[i - 1];
+        ll aux_n;
+        rl(aux_n);
+        while (aux_n > 0) {
+            A[N++] = aux_n % 10;
+            aux_n /= 10;
+        }
+        FOR(i, 0, N) {
+            MSK[A[i]] |= (1 << i);
+            INDS[A[i]].pb(i);
+        }
+    }
+    ri(M);
+    ll tot = f(0, 0);
+    printf("%lld\n", tot);
     return 0;
 }

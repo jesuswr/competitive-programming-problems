@@ -39,30 +39,25 @@ int dadsadasda;
 const int INF = 0x3f3f3f3f;
 const ll LLINF = 1e18;
 const int MAXN = 1e5; // CAMBIAR ESTE
-const ll MOD = 998244353;
 
 // GJNM
-ll N, M, L, R;
-
-ll bpow(ll b, ll e) {
-    ll ret = 1;
-    while (e > 0) {
-        if (e & 1) ret = (ret * b) % MOD;
-
-        b = (b * b) % MOD;
-        e >>= 1;
-    }
-    return ret;
-}
 
 int main() {
-    rll(N, M), rll(L, R);
-    if (N & M & 1)
-        printf("%lld\n", bpow(R - L + 1, N * M));
-    else if (~(R - L + 1) & 1)
-        printf("%lld\n", ( bpow(R - L + 1, N * M) * bpow(2, MOD - 2) ) % MOD);
-    else
-        printf("%lld\n", ((bpow(R - L + 1, N * M) + 1) * bpow(2, MOD - 2) ) % MOD);
+    int t; ri(t);
+    while (t--) {
+        string s; cin >> s;
+        FOR(i, 0, SZ(s)) {
+            if (i & 1) {
+                if (s[i] == 'z') printf("y");
+                else printf("z");
+            }
+            else {
+                if (s[i] == 'a') printf("b");
+                else printf("a");
+            }
+        }
+        printf("\n");
+    }
 
     return 0;
 }

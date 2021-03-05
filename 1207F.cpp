@@ -38,31 +38,41 @@ int dadsadasda;
 
 const int INF = 0x3f3f3f3f;
 const ll LLINF = 1e18;
-const int MAXN = 1e5; // CAMBIAR ESTE
-const ll MOD = 998244353;
+const int MAXN = 500010; // CAMBIAR ESTE
+const int SQRTN = 300;
 
 // GJNM
-ll N, M, L, R;
+ll A[MAXN];
+ll SUM[SQRTN][SQRTN];
 
-ll bpow(ll b, ll e) {
-    ll ret = 1;
-    while (e > 0) {
-        if (e & 1) ret = (ret * b) % MOD;
+void upd(int i, int val) {
+    FOR(j, 1, SQRTN) SUM[i % j][j] += val;
+    A[i] += val;
+}
 
-        b = (b * b) % MOD;
-        e >>= 1;
+ll query(int y, int x) {
+    ll ret = 0;
+    while (y < MAXN) {
+        ret += A[y];
+        y += x;
     }
     return ret;
 }
 
+
 int main() {
-    rll(N, M), rll(L, R);
-    if (N & M & 1)
-        printf("%lld\n", bpow(R - L + 1, N * M));
-    else if (~(R - L + 1) & 1)
-        printf("%lld\n", ( bpow(R - L + 1, N * M) * bpow(2, MOD - 2) ) % MOD);
-    else
-        printf("%lld\n", ((bpow(R - L + 1, N * M) + 1) * bpow(2, MOD - 2) ) % MOD);
+    int q; ri(q);
+    while (q--) {
+        int t, x, y;
+        riii(t, x, y);
+        if (t == 1) {
+            upd(x, y);
+        }
+        else {
+            if (x >= SQRTN) printf("%lld\n", query(y, x));
+            else printf("%lld\n", SUM[y][x]);
+        }
+    }
 
     return 0;
 }

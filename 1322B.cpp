@@ -38,31 +38,27 @@ int dadsadasda;
 
 const int INF = 0x3f3f3f3f;
 const ll LLINF = 1e18;
-const int MAXN = 1e5; // CAMBIAR ESTE
-const ll MOD = 998244353;
+const int MAXN = 5e5; // CAMBIAR ESTE
 
 // GJNM
-ll N, M, L, R;
-
-ll bpow(ll b, ll e) {
-    ll ret = 1;
-    while (e > 0) {
-        if (e & 1) ret = (ret * b) % MOD;
-
-        b = (b * b) % MOD;
-        e >>= 1;
-    }
-    return ret;
-}
+int N;
+ll A[MAXN];
+ll SUF[MAXN][32];
 
 int main() {
-    rll(N, M), rll(L, R);
-    if (N & M & 1)
-        printf("%lld\n", bpow(R - L + 1, N * M));
-    else if (~(R - L + 1) & 1)
-        printf("%lld\n", ( bpow(R - L + 1, N * M) * bpow(2, MOD - 2) ) % MOD);
-    else
-        printf("%lld\n", ((bpow(R - L + 1, N * M) + 1) * bpow(2, MOD - 2) ) % MOD);
-
+    ri(N);
+    FOR(i, 0, N) rl(A[i]);
+    for (int i = N - 1; i >= 0; --i) {
+        for (int b = 0; b < 32; ++b) {
+            SUF[i][b] = 1ll & (A[i] >> b);
+            SUF[i][b] += SUF[i + 1][b];
+        }
+    }
+    ll ans = 0;
+    FOR(i, 0, N - 1) FOR(b, 0, 32) {
+        if (1ll & (A[i] >> b)) ans += (N - i - 1 - SUF[i + 1][b]) * (1ll << b);
+        else ans += SUF[i + 1][b] * (1ll << b);
+    }
+    printf("%lld\n", ans);
     return 0;
 }

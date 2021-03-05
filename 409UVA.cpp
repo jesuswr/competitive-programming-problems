@@ -38,31 +38,36 @@ int dadsadasda;
 
 const int INF = 0x3f3f3f3f;
 const ll LLINF = 1e18;
-const int MAXN = 1e5; // CAMBIAR ESTE
-const ll MOD = 998244353;
+const int MAXN = 23; // CAMBIAR ESTE
 
 // GJNM
-ll N, M, L, R;
-
-ll bpow(ll b, ll e) {
-    ll ret = 1;
-    while (e > 0) {
-        if (e & 1) ret = (ret * b) % MOD;
-
-        b = (b * b) % MOD;
-        e >>= 1;
-    }
-    return ret;
-}
+int N, M;
+string KEY[MAXN], EXC[MAXN], EXC2[MAXN];
+int CNT[MAXN];
 
 int main() {
-    rll(N, M), rll(L, R);
-    if (N & M & 1)
-        printf("%lld\n", bpow(R - L + 1, N * M));
-    else if (~(R - L + 1) & 1)
-        printf("%lld\n", ( bpow(R - L + 1, N * M) * bpow(2, MOD - 2) ) % MOD);
-    else
-        printf("%lld\n", ((bpow(R - L + 1, N * M) + 1) * bpow(2, MOD - 2) ) % MOD);
+    int t = 0;
+    while (scanf("%d %d\n", &N, &M) != EOF) {
+        FOR(i, 0, N) cin >> KEY[i];
+        dadsadasda = scanf("%*c");
+        FOR(i, 0, M) {
+            getline(cin, EXC[i]);
+            EXC2[i] = EXC[i];
+            CNT[i] = 0;
+            for (auto &c : EXC[i]) if (isalpha(c)) c = tolower(c);
+            EXC[i] = "A " + EXC[i] + " A";
+        }
+        int mx = 0;
+        FOR(i, 0, N) FOR(j, 0, M) FOR(k, 2, SZ(EXC[j]) - 2) {
+            if (!EXC[j].compare(k, SZ(KEY[i]), KEY[i]) && !isalpha(EXC[j][k - 1]) && !isalpha(EXC[j][ k + SZ(KEY[i]) ])) {
+                ++CNT[j];
+            }
+            mx = max(mx, CNT[j]);
+        }
+        cout << "Excuse Set #" << ++t << endl;
+        FOR(i, 0, M) if (mx == CNT[i]) cout << EXC2[i] << endl;
+        cout << endl;
+    }
 
     return 0;
 }

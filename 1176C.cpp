@@ -38,31 +38,35 @@ int dadsadasda;
 
 const int INF = 0x3f3f3f3f;
 const ll LLINF = 1e18;
-const int MAXN = 1e5; // CAMBIAR ESTE
-const ll MOD = 998244353;
+const int MAXN = 5e5; // CAMBIAR ESTE
 
 // GJNM
-ll N, M, L, R;
-
-ll bpow(ll b, ll e) {
-    ll ret = 1;
-    while (e > 0) {
-        if (e & 1) ret = (ret * b) % MOD;
-
-        b = (b * b) % MOD;
-        e >>= 1;
-    }
-    return ret;
-}
+int N;
+int A[MAXN];
+int CNT[6];
 
 int main() {
-    rll(N, M), rll(L, R);
-    if (N & M & 1)
-        printf("%lld\n", bpow(R - L + 1, N * M));
-    else if (~(R - L + 1) & 1)
-        printf("%lld\n", ( bpow(R - L + 1, N * M) * bpow(2, MOD - 2) ) % MOD);
-    else
-        printf("%lld\n", ((bpow(R - L + 1, N * M) + 1) * bpow(2, MOD - 2) ) % MOD);
-
+    ri(N);
+    FOR(i, 0, N) ri(A[i]);
+    FOR(i, 0, N) {
+        if (A[i] == 4)
+            ++CNT[0];
+        else if (A[i] == 8) {
+            if (CNT[0] > CNT[1]) ++CNT[1];
+        }
+        else if (A[i] == 15) {
+            if (CNT[1] > CNT[2]) ++CNT[2];
+        }
+        else if (A[i] == 16) {
+            if (CNT[2] > CNT[3]) ++CNT[3];
+        }
+        else if (A[i] == 23) {
+            if (CNT[3] > CNT[4]) ++CNT[4];
+        }
+        else if (A[i] == 42) {
+            if (CNT[4] > CNT[5]) ++CNT[5];
+        }
+    }
+    printf("%d\n", N - 6 * CNT[5]);
     return 0;
 }

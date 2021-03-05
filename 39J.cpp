@@ -39,30 +39,36 @@ int dadsadasda;
 const int INF = 0x3f3f3f3f;
 const ll LLINF = 1e18;
 const int MAXN = 1e5; // CAMBIAR ESTE
-const ll MOD = 998244353;
 
 // GJNM
-ll N, M, L, R;
+string S, T;
+string AUX, AUX2;
 
-ll bpow(ll b, ll e) {
-    ll ret = 1;
-    while (e > 0) {
-        if (e & 1) ret = (ret * b) % MOD;
-
-        b = (b * b) % MOD;
-        e >>= 1;
+vi pf(const string &s) {
+    int n = SZ(s);
+    vi pi(n);
+    FOR(i, 1, n) {
+        int j = pi[i - 1];
+        while (j > 0 && s[j] != s[i]) j = pi[j - 1];
+        if (s[j] == s[i]) pi[i] = j + 1;
     }
-    return ret;
+    return pi;
 }
 
 int main() {
-    rll(N, M), rll(L, R);
-    if (N & M & 1)
-        printf("%lld\n", bpow(R - L + 1, N * M));
-    else if (~(R - L + 1) & 1)
-        printf("%lld\n", ( bpow(R - L + 1, N * M) * bpow(2, MOD - 2) ) % MOD);
-    else
-        printf("%lld\n", ((bpow(R - L + 1, N * M) + 1) * bpow(2, MOD - 2) ) % MOD);
+    cin >> S >> T;
+    AUX = T + '$' + S;
+    AUX2 = S + '$' + T;
+    reverse(ALL(AUX2));
 
+    vi ans;
+    vi pref = pf(AUX), prefrev = pf(AUX2);
+    FOR(i, 0, SZ(S)) {
+        int l = i, r = SZ(S) - 1 - i;
+        if (pref[ SZ(T) + l ] == l && prefrev[ SZ(T) + r] == r) ans.pb(i);
+    }
+    printf("%d\n", SZ(ans));
+    for (auto x : ans) printf("%d ", x + 1);
+    printf("\n");
     return 0;
 }

@@ -38,31 +38,37 @@ int dadsadasda;
 
 const int INF = 0x3f3f3f3f;
 const ll LLINF = 1e18;
-const int MAXN = 1e5; // CAMBIAR ESTE
-const ll MOD = 998244353;
+const int MAXN = 12; // CAMBIAR ESTE
 
 // GJNM
-ll N, M, L, R;
+string S;
+int N;
+string P[MAXN];
 
-ll bpow(ll b, ll e) {
-    ll ret = 1;
-    while (e > 0) {
-        if (e & 1) ret = (ret * b) % MOD;
-
-        b = (b * b) % MOD;
-        e >>= 1;
+bool valid(int l, int r) {
+    FOR(i, 0, N) {
+        if (SZ(P[i]) > r - l) continue;
+        bool eq = true;
+        FOR(j, 0, SZ(P[i])) eq &= S[r - SZ(P[i]) + j] == P[i][j];
+        if (eq) return false;
     }
-    return ret;
+    return true;
 }
 
 int main() {
-    rll(N, M), rll(L, R);
-    if (N & M & 1)
-        printf("%lld\n", bpow(R - L + 1, N * M));
-    else if (~(R - L + 1) & 1)
-        printf("%lld\n", ( bpow(R - L + 1, N * M) * bpow(2, MOD - 2) ) % MOD);
-    else
-        printf("%lld\n", ((bpow(R - L + 1, N * M) + 1) * bpow(2, MOD - 2) ) % MOD);
-
+    cin >> S;
+    ri(N);
+    FOR(i, 0, N) cin >> P[i];
+    int l = 0, r = 0;
+    int mx = 0, mxi = 0;
+    while (r <= SZ(S)) {
+        if (valid(l, r)) {
+            mx = max(mx, r - l);
+            mxi = (mx == r - l ? l : mxi);
+            ++r;
+        }
+        else ++l;
+    }
+    printf("%d %d\n", mx, mxi);
     return 0;
 }
