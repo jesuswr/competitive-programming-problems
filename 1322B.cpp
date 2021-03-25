@@ -38,27 +38,34 @@ int dadsadasda;
 
 const int INF = 0x3f3f3f3f;
 const ll LLINF = 1e18;
-const int MAXN = 5e5; // CAMBIAR ESTE
+const int MAXN = 4e5 + 10; // CAMBIAR ESTE
 
 // GJNM
-int N;
+ll N;
 ll A[MAXN];
-ll SUF[MAXN][32];
 
 int main() {
-    ri(N);
+    rl(N);
     FOR(i, 0, N) rl(A[i]);
-    for (int i = N - 1; i >= 0; --i) {
-        for (int b = 0; b < 32; ++b) {
-            SUF[i][b] = 1ll & (A[i] >> b);
-            SUF[i][b] += SUF[i + 1][b];
-        }
-    }
     ll ans = 0;
-    FOR(i, 0, N - 1) FOR(b, 0, 32) {
-        if (1ll & (A[i] >> b)) ans += (N - i - 1 - SUF[i + 1][b]) * (1ll << b);
-        else ans += SUF[i + 1][b] * (1ll << b);
+    FOR(b, 0, 30) {
+        vector<ll> B;
+        FOR(i, 0, N) B.pb(A[i] & ((1ll << (b + 1ll)) - 1ll));
+        sort(ALL(B));
+        ll cnt = 0;
+        FOR(i, 0, N) {
+            ll lo = (1ll << b) - B[i], hi = (1ll << (b + 1ll)) - 1ll - B[i];
+            auto itl = lb(ALL(B), lo), ith = ub(ALL(B), hi);
+            cnt += (ith - itl) - (lo <= B[i] && B[i] <= hi);
+
+            lo = (1ll << b) + (1ll << (b + 1ll)) - B[i], hi = (1ll << (b + 2ll)) - 2ll - B[i];
+            itl = lb(ALL(B), lo), ith = ub(ALL(B), hi);
+            cnt += (ith - itl) - (lo <= B[i] && B[i] <= hi);
+        }
+        cnt >>= 1ll;
+        if (cnt & 1ll) ans |= 1ll << b;
     }
     printf("%lld\n", ans);
+
     return 0;
 }
