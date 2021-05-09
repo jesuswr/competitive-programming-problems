@@ -10,10 +10,12 @@
 #include <map>
 #include <unordered_map>
 #include <assert.h>
+#include <array>
 
 using namespace std;
 
 typedef long long ll;
+typedef long double ld;
 typedef pair<int, int> pii;
 typedef pair<int, pair<int, int>> piii;
 typedef vector<int> vi;
