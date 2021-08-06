@@ -132,7 +132,8 @@ struct query {
     int l, r, i;
 
     bool operator<(query b) {
-        return make_pair(l / 600, r) < make_pair(b.l / 600, b.r);
+        int block = l / 600, r_block = b.l / 600;
+        return make_pair(block, (block & 1 ? -r : r)) < make_pair(r_block, (r_block & 1 ? -b.r : b.r));
     }
 };
 
