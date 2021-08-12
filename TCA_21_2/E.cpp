@@ -129,6 +129,8 @@ bool cmp(int i, int j, int i2, int j2) {
 }
 
 int main() {
+    freopen("matrix.in", "r", stdin);
+    freopen("matrix.out", "w", stdout);
 
     while (cin >> M[N]) {
         M[N] += M[N];
