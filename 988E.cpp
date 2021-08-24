@@ -46,8 +46,51 @@ const int MAXN = 1e5; // CAMBIAR ESTE
 mt19937 rng(chrono::system_clock::now().time_since_epoch().count());
 
 // GJNM
+ll N;
+vi N_DIG;
 
 int main() {
+    rl(N);
+    {
+        ll aux_n = N;
+        while (aux_n > 0) {
+            N_DIG.pb(aux_n % 10);
+            aux_n /= 10;
+        }
+        reverse(ALL(N_DIG));
+    }
 
+    int ans = INF;
+    FOR(i, 0, SZ(N_DIG)) FOR(j, 0, SZ(N_DIG)) if (i != j) {
+        vi aux;
+        FOR(k, 0, SZ(N_DIG)) aux.pb(N_DIG[k]);
+
+        int cnt = 0;
+        FOR(k, j, SZ(N_DIG) - 1) {
+            swap(aux[k], aux[k + 1]);
+            cnt++;
+        }
+        int epa = 0;
+        if (i > j) epa = 1;
+        FOR(k, i - epa, SZ(N_DIG) - 2) {
+            swap(aux[k], aux[k + 1]);
+            cnt++;
+        }
+        int fst_zero;
+        FOR(k, 0, SZ(N_DIG)) if (aux[k] != 0) {
+            fst_zero = k;
+            break;
+        }
+
+        for (int k = fst_zero; k > 0; --k) {
+            swap(aux[k], aux[k - 1]);
+            cnt++;
+        }
+
+        if ((10 * aux[SZ(aux) - 2] + aux[SZ(aux) - 1]) % 25 == 0)
+            ans = min(ans, cnt);
+
+    }
+    printf("%d\n", (ans == INF ? -1 : ans));
     return 0;
 }

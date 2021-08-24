@@ -46,8 +46,29 @@ const int MAXN = 1e5; // CAMBIAR ESTE
 mt19937 rng(chrono::system_clock::now().time_since_epoch().count());
 
 // GJNM
+ll cost(ll len, ll pieces) {
+    if (pieces > len)
+        return LLINF;
+    ll extra = len % pieces;
+    ll x = len / pieces;
+    return (pieces - extra) * x * x + extra * (x + 1) * (x + 1);
+}
 
 int main() {
-
+    int n, k; rii(n, k);
+    priority_queue< tuple<ll, ll, ll> > pq;
+    ll tot = 0;
+    FOR(i, 0, n) {
+        int a; ri(a);
+        ll a_cost = cost(a, 1);
+        tot += a_cost;
+        pq.push({a_cost - cost(a, 2), a, 1});
+    }
+    FOR(_, 0, k - n) {
+        auto [delta_cst, len, pieces] = pq.top(); pq.pop();
+        tot -= delta_cst;
+        pq.push({cost(len, pieces + 1) - cost(len, pieces + 2), len, pieces + 1});
+    }
+    printf("%lld\n", tot);
     return 0;
 }
