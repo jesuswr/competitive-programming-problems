@@ -42,36 +42,55 @@ int dadsadasda;
 
 const int INF = 0x3f3f3f3f;
 const ll LLINF = 1e18;
-const int MAXN = 4e5; // CAMBIAR ESTE
+const int MAXN = 3010; // CAMBIAR ESTE
+const int MOD = 1e9 + 7;
 mt19937 rng(chrono::system_clock::now().time_since_epoch().count());
 
 // GJNM
-int N, Q;
-string S;
-int PREF[MAXN];
+int N, D;
+vi G[MAXN];
 
-void solve() {
-    rii(N, Q);
-    cin >> S;
-    int sm = 0;
-    FOR(i, 0, N) {
-        sm += (S[i] == '+' ? 1 : -1) * (i & 1 ? -1 : 1);
-        PREF[i] = sm;
+int DP[MAXN][MAXN];
+int f(int u, int d) {
+    if (DP[u][d] != 0)
+        return DP[u][d];
+    DP[u][d] = 1;
+    for (auto v : G[u])
+        DP[u][d] = (1ll * DP[u][d] * f(v, d)) % MOD;
+    if (d > 1)
+        DP[u][d] = (DP[u][d] + f(u, d - 1)) % MOD;
+    return DP[u][d];
+}
+
+int binpow(int b, int e) {
+    int ret = 1;
+    while (e) {
+        if (e & 1) ret = (1ll * ret * b) % MOD;
+        e >>= 1;
+        b = (1ll * b * b) % MOD;
     }
-    FOR(i, 0, Q) {
-        int l, r; rii(l, r); --l; --r;
-        int aux = PREF[r] - (l > 0 ? PREF[l - 1] : 0);
-        if (aux == 0)
-            printf("0\n");
-        else if (abs(aux) & 1)
-            printf("1\n");
-        else
-            printf("2\n");
-    }
+    return ret;
 }
 
 int main() {
-    int t; ri(t);
-    while (t--) solve();
+    rii(N, D);
+    FOR(i, 1, N) {
+        int p; ri(p);
+        G[p - 1].pb(i);
+    }
+    FOR(c, 1, N + 2) f(0, c);
+
+    int ans = 0;
+    FOR(i, 1, N + 2) {
+        int fact = 1;
+        FOR(j, 1, N + 2) {
+            if (i == j) continue;
+            fact = (1ll * fact * (D - j + MOD)) % MOD;
+            fact = (1ll * fact * binpow(i - j + MOD, MOD - 2)) % MOD;
+        }
+        fact = (1ll * fact * DP[0][i]) % MOD;
+        ans = (ans + fact) % MOD;
+    }
+    printf("%d\n", ans);
     return 0;
 }

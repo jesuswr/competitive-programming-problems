@@ -42,36 +42,26 @@ int dadsadasda;
 
 const int INF = 0x3f3f3f3f;
 const ll LLINF = 1e18;
-const int MAXN = 4e5; // CAMBIAR ESTE
+const int MAXN = 120; // CAMBIAR ESTE
 mt19937 rng(chrono::system_clock::now().time_since_epoch().count());
 
 // GJNM
-int N, Q;
-string S;
-int PREF[MAXN];
-
-void solve() {
-    rii(N, Q);
-    cin >> S;
-    int sm = 0;
-    FOR(i, 0, N) {
-        sm += (S[i] == '+' ? 1 : -1) * (i & 1 ? -1 : 1);
-        PREF[i] = sm;
-    }
-    FOR(i, 0, Q) {
-        int l, r; rii(l, r); --l; --r;
-        int aux = PREF[r] - (l > 0 ? PREF[l - 1] : 0);
-        if (aux == 0)
-            printf("0\n");
-        else if (abs(aux) & 1)
-            printf("1\n");
-        else
-            printf("2\n");
-    }
-}
+int D[MAXN][MAXN];
 
 int main() {
-    int t; ri(t);
-    while (t--) solve();
+    int N, L, Q;
+    riii(N, L, Q);
+    FOR(i, 0, N) FOR(j, 0, N) D[i][j] = (i == j ? 0 : INF);
+    FOR(_, 0, L) {
+        int a, b, c; riii(a, b, c); --a, --b;
+        D[a][b] = min(D[a][b], c);
+        D[b][a] = min(D[b][a], c);
+    }
+    FOR(k, 0, N) FOR(i, 0, N) FOR(j, 0, N) D[i][j] = min(D[i][j], D[i][k] + D[k][j]);
+    while (Q--) {
+        int a, b; rii(a, b);
+        printf("%d\n", D[a - 1][b - 1]);
+    }
+
     return 0;
 }

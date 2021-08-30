@@ -42,36 +42,52 @@ int dadsadasda;
 
 const int INF = 0x3f3f3f3f;
 const ll LLINF = 1e18;
-const int MAXN = 4e5; // CAMBIAR ESTE
+const int MAXN = 1e5; // CAMBIAR ESTE
 mt19937 rng(chrono::system_clock::now().time_since_epoch().count());
 
 // GJNM
-int N, Q;
-string S;
-int PREF[MAXN];
-
-void solve() {
-    rii(N, Q);
-    cin >> S;
-    int sm = 0;
-    FOR(i, 0, N) {
-        sm += (S[i] == '+' ? 1 : -1) * (i & 1 ? -1 : 1);
-        PREF[i] = sm;
-    }
-    FOR(i, 0, Q) {
-        int l, r; rii(l, r); --l; --r;
-        int aux = PREF[r] - (l > 0 ? PREF[l - 1] : 0);
-        if (aux == 0)
-            printf("0\n");
-        else if (abs(aux) & 1)
-            printf("1\n");
-        else
-            printf("2\n");
-    }
-}
+vi INIT(7), GOAL(7);
+map<vi, int> IND_OF;
+map<int, vi> VEC_OF;
+vii MOVES = {{0, 1}, {0, 3}, {1, 4}, {2, 3}, {2, 5}, {3, 4}, {3, 6}, {5, 6}};
+ll D[6000];
 
 int main() {
-    int t; ri(t);
-    while (t--) solve();
+    FOR(i, 0, 6000) D[i] = LLINF;
+    FOR(i, 0, 7) ri(INIT[i]);
+    FOR(i, 0, 7) ri(GOAL[i]);
+
+    {
+        int b = 0;
+        vi aux = INIT;
+        sort(ALL(aux));
+        do {
+            IND_OF[aux] = b;
+            VEC_OF[b++] = aux;
+        } while (next_permutation(ALL(aux)));
+    }
+
+
+    D[IND_OF[INIT]] = 0;
+    priority_queue<pair<ll, int>> pq; pq.push({0, IND_OF[INIT]});
+    while (!pq.empty()) {
+        auto [c, u] = pq.top(); pq.pop();
+        c = -c;
+        if (D[u] < c)
+            continue;
+        vi vec = VEC_OF[u];
+
+        for (auto [i, j] : MOVES) {
+            swap(vec[i], vec[j]);
+            int v = IND_OF[vec];
+            if (D[v] > D[u] + vec[i] + vec[j]) {
+                D[v] = D[u] + vec[i] + vec[j];
+                pq.push({ -D[v], v});
+            }
+
+            swap(vec[i], vec[j]);
+        }
+    }
+    printf("%lld\n", D[IND_OF[GOAL]]);
     return 0;
 }

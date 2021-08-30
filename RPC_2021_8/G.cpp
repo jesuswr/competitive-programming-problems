@@ -42,36 +42,35 @@ int dadsadasda;
 
 const int INF = 0x3f3f3f3f;
 const ll LLINF = 1e18;
-const int MAXN = 4e5; // CAMBIAR ESTE
+const int MAXN = 1e5; // CAMBIAR ESTE
 mt19937 rng(chrono::system_clock::now().time_since_epoch().count());
 
 // GJNM
-int N, Q;
-string S;
-int PREF[MAXN];
+int N, M;
+vi G[MAXN];
 
-void solve() {
-    rii(N, Q);
-    cin >> S;
-    int sm = 0;
-    FOR(i, 0, N) {
-        sm += (S[i] == '+' ? 1 : -1) * (i & 1 ? -1 : 1);
-        PREF[i] = sm;
+int DP[16][1 << 16];
+int f(int u, int msk) {
+    if (DP[u][msk] != 0)
+        return DP[u][msk];
+    DP[u][msk] = 1;
+    for (auto v : G[u]) {
+        if ((msk >> v) & 1)
+            continue;
+        DP[u][msk] = max(DP[u][msk], 1 + f(v, msk | (1 << v)));
     }
-    FOR(i, 0, Q) {
-        int l, r; rii(l, r); --l; --r;
-        int aux = PREF[r] - (l > 0 ? PREF[l - 1] : 0);
-        if (aux == 0)
-            printf("0\n");
-        else if (abs(aux) & 1)
-            printf("1\n");
-        else
-            printf("2\n");
-    }
+    return DP[u][msk];
 }
 
 int main() {
-    int t; ri(t);
-    while (t--) solve();
+    rii(N, M);
+    FOR(_, 0, M) {
+        int a, b; rii(a, b); --a, --b;
+        G[a].pb(b);
+        G[b].pb(a);
+    }
+    int ans = 0;
+    FOR(i, 0, N) ans = max(ans, f(i, 1 << i));
+    printf("%d\n", ans);
     return 0;
 }

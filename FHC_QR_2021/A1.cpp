@@ -42,36 +42,36 @@ int dadsadasda;
 
 const int INF = 0x3f3f3f3f;
 const ll LLINF = 1e18;
-const int MAXN = 4e5; // CAMBIAR ESTE
+const int MAXN = 1e5; // CAMBIAR ESTE
 mt19937 rng(chrono::system_clock::now().time_since_epoch().count());
 
 // GJNM
-int N, Q;
-string S;
-int PREF[MAXN];
-
+bool IS_V[30];
 void solve() {
-    rii(N, Q);
-    cin >> S;
-    int sm = 0;
-    FOR(i, 0, N) {
-        sm += (S[i] == '+' ? 1 : -1) * (i & 1 ? -1 : 1);
-        PREF[i] = sm;
+    string s; cin >> s;
+    int ans = INF;
+    FOR(i, 0, 26) {
+        int cnt = 0;
+        for (auto c : s) {
+            if (c == 'A' + i)
+                continue;
+            if (IS_V[c - 'A'] == IS_V[i])
+                cnt += 2;
+            else
+                cnt += 1;
+        }
+        ans = min(ans, cnt);
     }
-    FOR(i, 0, Q) {
-        int l, r; rii(l, r); --l; --r;
-        int aux = PREF[r] - (l > 0 ? PREF[l - 1] : 0);
-        if (aux == 0)
-            printf("0\n");
-        else if (abs(aux) & 1)
-            printf("1\n");
-        else
-            printf("2\n");
-    }
+    printf("%d\n", ans);
 }
 
+
 int main() {
+    IS_V['A' - 'A'] = IS_V['E' - 'A'] = IS_V['I' - 'A'] = IS_V['O' - 'A'] = IS_V['U' - 'A'] = 1;
     int t; ri(t);
-    while (t--) solve();
+    FOR(i, 1, t + 1) {
+        printf("Case #%d: ", i);
+        solve();
+    }
     return 0;
 }

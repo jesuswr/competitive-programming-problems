@@ -42,36 +42,34 @@ int dadsadasda;
 
 const int INF = 0x3f3f3f3f;
 const ll LLINF = 1e18;
-const int MAXN = 4e5; // CAMBIAR ESTE
+const int MAXN = 1e5; // CAMBIAR ESTE
 mt19937 rng(chrono::system_clock::now().time_since_epoch().count());
 
 // GJNM
-int N, Q;
-string S;
-int PREF[MAXN];
-
-void solve() {
-    rii(N, Q);
-    cin >> S;
-    int sm = 0;
-    FOR(i, 0, N) {
-        sm += (S[i] == '+' ? 1 : -1) * (i & 1 ? -1 : 1);
-        PREF[i] = sm;
-    }
-    FOR(i, 0, Q) {
-        int l, r; rii(l, r); --l; --r;
-        int aux = PREF[r] - (l > 0 ? PREF[l - 1] : 0);
-        if (aux == 0)
-            printf("0\n");
-        else if (abs(aux) & 1)
-            printf("1\n");
-        else
-            printf("2\n");
-    }
-}
 
 int main() {
-    int t; ri(t);
-    while (t--) solve();
+    priority_queue< pair<ll, string>> pq;
+    ll t; rl(t);
+    while (t--) {
+        string s; ll c;
+        cin >> s >> c;
+        if (SZ(pq) < 3)
+            pq.push({ -c, s});
+        else if (-pq.top().F <  c) {
+            pq.pop();
+            pq.push({ -c, s});
+        }
+    }
+    ll prod = 1;
+    vector<string> ans;
+    while (!pq.empty()) {
+        prod *= abs(pq.top().F);
+        ans.pb(pq.top().S);
+        pq.pop();
+    }
+    sort(ALL(ans));
+    FOR(i, 0, SZ(ans)) cout << ans[i] << " ";
+    cout << prod;
+
     return 0;
 }

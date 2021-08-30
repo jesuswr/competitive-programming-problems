@@ -42,36 +42,30 @@ int dadsadasda;
 
 const int INF = 0x3f3f3f3f;
 const ll LLINF = 1e18;
-const int MAXN = 4e5; // CAMBIAR ESTE
+const int MAXN = 1e5; // CAMBIAR ESTE
 mt19937 rng(chrono::system_clock::now().time_since_epoch().count());
 
 // GJNM
-int N, Q;
-string S;
-int PREF[MAXN];
-
-void solve() {
-    rii(N, Q);
-    cin >> S;
-    int sm = 0;
-    FOR(i, 0, N) {
-        sm += (S[i] == '+' ? 1 : -1) * (i & 1 ? -1 : 1);
-        PREF[i] = sm;
-    }
-    FOR(i, 0, Q) {
-        int l, r; rii(l, r); --l; --r;
-        int aux = PREF[r] - (l > 0 ? PREF[l - 1] : 0);
-        if (aux == 0)
-            printf("0\n");
-        else if (abs(aux) & 1)
-            printf("1\n");
-        else
-            printf("2\n");
-    }
-}
 
 int main() {
-    int t; ri(t);
-    while (t--) solve();
+    priority_queue<tuple<ll, int, string>> pq;
+    string s;
+    int aux = 0;
+    while (cin >> s) {
+        aux++;
+        if (s == "V") {
+            if (pq.empty())
+                cout << endl;
+            else {
+                auto [_, __, t] = pq.top(); pq.pop();
+                cout << t << endl;
+            }
+        }
+        else {
+            ll cst; cin >> cst;
+            pq.push({cst, -aux, s});
+        }
+    }
+
     return 0;
 }

@@ -42,36 +42,46 @@ int dadsadasda;
 
 const int INF = 0x3f3f3f3f;
 const ll LLINF = 1e18;
-const int MAXN = 4e5; // CAMBIAR ESTE
+const int MAXN = 1e5 + 10; // CAMBIAR ESTE
 mt19937 rng(chrono::system_clock::now().time_since_epoch().count());
 
 // GJNM
-int N, Q;
-string S;
-int PREF[MAXN];
-
-void solve() {
-    rii(N, Q);
-    cin >> S;
-    int sm = 0;
-    FOR(i, 0, N) {
-        sm += (S[i] == '+' ? 1 : -1) * (i & 1 ? -1 : 1);
-        PREF[i] = sm;
-    }
-    FOR(i, 0, Q) {
-        int l, r; rii(l, r); --l; --r;
-        int aux = PREF[r] - (l > 0 ? PREF[l - 1] : 0);
-        if (aux == 0)
-            printf("0\n");
-        else if (abs(aux) & 1)
-            printf("1\n");
-        else
-            printf("2\n");
-    }
-}
+vi G[MAXN];
+int D[MAXN];
+bool VIS[MAXN];
+set<int> HOLA[MAXN];
 
 int main() {
-    int t; ri(t);
-    while (t--) solve();
+    int N, C, K; riii(N, C, K);
+    FOR(_, 0, C) {
+        int a, b; rii(a, b);
+        G[a].pb(b);
+        G[b].pb(a);
+    }
+
+    VIS[K] = 1;
+    queue<int> ord; ord.push(K);
+
+    while (!ord.empty()) {
+        int u = ord.front(); ord.pop();
+        for (auto v : G[u]) {
+            if (!VIS[v]) {
+                VIS[v] = 1;
+                D[v] = D[u] + 1;
+                ord.push(v);
+            }
+        }
+    }
+    FOR(i, 0, N) if (i != K) HOLA[D[i]].insert(i);
+
+    FOR(i, 0, N) {
+        if (!HOLA[i].empty()) {
+            printf("%d:", i);
+            for (auto x : HOLA[i]) printf(" %d", x);
+            printf("\n");
+        }
+    }
+
+
     return 0;
 }
