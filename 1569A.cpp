@@ -47,7 +47,19 @@ const int MAXN = 1e5; // CAMBIAR ESTE
 
 // GJNM
 
-int main() {
+void solve() {
+    int n; ri(n);
+    string s; cin >> s;
+    FOR(i, 0, n - 1) if (s[i] != s[i + 1]) {
+        printf("%d %d\n", i + 1, i + 2);
+        return;
+    }
+    printf("-1 -1\n");
+}
 
+int main() {
+    int t = 1;
+    ri(t);
+    while (t--) solve();
     return 0;
 }

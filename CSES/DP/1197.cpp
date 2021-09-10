@@ -46,8 +46,44 @@ const int MAXN = 1e5; // CAMBIAR ESTE
 //mt19937 rng(chrono::system_clock::now().time_since_epoch().count());
 
 // GJNM
-
 int main() {
+    int n, m; rii(n, m);
+    vector<tuple<int, int, ll>> edges(m);
+    FOR(i, 0, m) {
+        int a, b, c; riii(a, b, c);
+        edges[i] = {a - 1, b - 1, c};
+    }
+    vector<ll> D(n);
+    vi F(n);
+    bool change = true;
+    for (int i = 0; i < n - 1 && change; ++i) {
+        change = false;
+        for (auto [a, b, c] : edges) {
+            if (D[a] + c < D[b]) {
+                D[b] = D[a] + c;
+                F[b] = a;
+                change = true;
+            }
+        }
+    }
 
+    for (auto [a, b, c] : edges) {
+        if (D[a] + c < D[b]) {
+            printf("YES\n");
+            vi cyc;
+            FOR(i, 0, n) a = F[a];
+            int u = a;
+            do {
+                cyc.pb(u + 1);
+                u = F[u];
+            } while (u != a);
+            cyc.pb(u + 1);
+            reverse(ALL(cyc));
+            for (auto v : cyc) printf("%d ", v);
+            printf("\n");
+            return 0;
+        }
+    }
+    printf("NO\n");
     return 0;
 }

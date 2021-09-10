@@ -1,0 +1,166 @@
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <stack>
+#include <algorithm>
+#include <math.h>
+#include <string>
+#include <cstring>
+#include <set>
+#include <map>
+#include <unordered_map>
+#include <assert.h>
+#include <array>
+#include <random>
+#include <chrono>
+
+using namespace std;
+
+typedef long long ll;
+typedef long double ld;
+typedef pair<int, int> pii;
+typedef pair<int, pair<int, int>> piii;
+typedef vector<int> vi;
+typedef vector<pii> vii;
+
+int dadsadasda;
+
+#define ri(a) dadsadasda=scanf("%d", &a)
+#define rii(a,b) dadsadasda=scanf("%d %d", &a, &b)
+#define riii(a,b,c) dadsadasda=scanf("%d %d %d", &a, &b, &c)
+#define rl(a) dadsadasda=scanf("%lld", &a)
+#define rll(a,b) dadsadasda=scanf("%lld %lld", &a, &b)
+#define FOR(i,n,m) for(int i=n; i<m; i++)
+#define ROF(i,n,m) for(int i=n; i>m; i--)
+#define pb push_back
+#define lb lower_bound
+#define ub upper_bound
+#define F first
+#define S second
+#define ALL(s) s.begin(),s.end()
+#define SZ(s) (int)s.size()
+
+const int INF = 0x3f3f3f3f;
+const ll LLINF = 1e18;
+const int MAXN = 1e5; // CAMBIAR ESTE
+mt19937 rng(chrono::system_clock::now().time_since_epoch().count());
+
+// GJNM
+struct robot {
+    int x, r, q;
+    int comp_x, comp_xl, comp_xr;
+};
+
+int N, K;
+vector<pair<int, vector<robot>>> A;
+
+void inp() {
+    vector<robot> b;
+    set<int> xs;
+    FOR(i, 0, N) {
+        b.emplace_back();
+        riii(b[i].x, b[i].r, b[i].q);
+        xs.insert(b[i].x);
+        xs.insert(b[i].x - b[i].r);
+        xs.insert(b[i].x + b[i].r);
+    }
+    map<int, int> new_x; int ind = 1;
+    for (int x : xs)
+        new_x[x] = ind++;
+    FOR(i, 0, N) {
+        b[i].comp_x = new_x[b[i].x];
+        b[i].comp_xl = new_x[b[i].x - b[i].r];
+        b[i].comp_xr = new_x[b[i].x + b[i].r];
+    }
+    sort(ALL(b),
+    [](robot x, robot y) {
+        return x.q < y.q;
+    });
+    for (int i = 0; i < N;) {
+        int k = i;
+        vector<robot> c;
+        while (i < N && b[i].q == b[k].q)
+            c.pb(b[i++]);
+        sort(ALL(c),
+        [](robot x, robot y) {
+            return x.x < y.x;
+        });
+        A.pb({b[k].q, c});
+    }
+    N = ind;
+}
+
+// Todos los rangos son semi-abiertos [a,b)
+struct STN {
+    int sm;
+    void merge(STN& L, STN& R) {
+        sm = L.sm + R.sm;
+    }
+    void operator=(int a) {
+        sm = a;
+    }
+};
+STN ST[12 * MAXN + 69];
+STN STQ(int x, int y, int id = 1, int l = 0, int r = N) {
+    if (x == l && y == r) return ST[id];
+    int m = (l + r) >> 1, L = id << 1, R = L | 1;
+    if (x >= m) return STQ(x, y, R, m, r);
+    if (y <= m) return STQ(x, y, L, l, m);
+    STN res, ln = STQ(x, m, L, l, m), rn = STQ(m, y, R, m, r);
+    return res.merge(ln, rn), res;
+}
+void STU(int p, int x, int id = 1, int l = 0, int r = N) {
+    if (r - l < 2) {
+        ST[id] = ST[id].sm + x;
+        return;
+    }
+    int m = (l + r) >> 1, L = id << 1, R = L | 1;
+    if (p < m) STU(p, x, L, l, m);
+    else STU(p, x, R, m, r);
+    ST[id].merge(ST[L], ST[R]);
+}
+
+
+ll go(vector<robot> &a, vector<robot> &b) {
+    vii adds, dels;
+    for (auto r : b) {
+        adds.push_back({r.comp_xl, r.comp_x});
+        dels.push_back({r.comp_xr, r.comp_x});
+    }
+    sort(ALL(adds)); sort(ALL(dels));
+
+    ll cnt = 0;
+    int ai = 0, di = 0;
+    for (auto r : a) {
+        while (ai < SZ(adds) && adds[ai].F <= r.comp_x)
+            STU(adds[ai++].S, 1);
+        while (di < SZ(dels) && dels[di].F < r.comp_x)
+            STU(dels[di++].S, -1);
+        cnt += STQ(r.comp_xl, r.comp_xr + 1).sm;
+    }
+
+    while (ai < SZ(adds))
+        STU(adds[ai++].S, 1);
+    while (di < SZ(dels))
+        STU(dels[di++].S, -1);
+    assert(STQ(0, N).sm == 0);
+    return cnt;
+}
+
+int main() {
+    rii(N, K);
+    inp();
+    ll ans = 0;
+    FOR(i, 0, SZ(A)) {
+        int j = i;
+        while (j < SZ(A) && A[j].F - A[i].F <= K) {
+            if (i == j)
+                ans += (go(A[i].S, A[j].S) - SZ(A[i].S)) / 2;
+            else
+                ans += go(A[i].S, A[j].S);
+            j++;
+        }
+    }
+    printf("%lld\n", ans);
+    return 0;
+}

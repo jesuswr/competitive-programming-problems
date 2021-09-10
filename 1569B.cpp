@@ -46,8 +46,33 @@ const int MAXN = 1e5; // CAMBIAR ESTE
 //mt19937 rng(chrono::system_clock::now().time_since_epoch().count());
 
 // GJNM
+char M[69][69];
+void solve() {
+    int n; ri(n);
+    FOR(i, 0, n) FOR(j, 0, n) M[i][j] = (i == j ? 'X' : '=');
+    string s; cin >> s;
+    vi inds;
+    FOR(i, 0, n) if (s[i] == '2')
+        inds.pb(i);
+
+    if (SZ(inds) <= 2 && SZ(inds) >= 1)
+        printf("NO\n");
+    else {
+        FOR(i, 0, SZ(inds)) {
+            M[inds[i]][inds[(i + 1) % SZ(inds)]] = '+';
+            M[inds[(i + 1) % SZ(inds)]][inds[i]] = '-';
+        }
+        printf("YES\n");
+        FOR(i, 0, n) {
+            FOR(j, 0, n) printf("%c", M[i][j]);
+            printf("\n");
+        }
+    }
+}
+
 
 int main() {
-
+    int t; ri(t);
+    while (t--) solve();
     return 0;
 }

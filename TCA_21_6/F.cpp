@@ -48,6 +48,16 @@ const int MAXN = 1e5; // CAMBIAR ESTE
 // GJNM
 
 int main() {
-
+    int n; ri(n);
+    int mn = 1e9;
+    for (int h = 1; h <= n; ++h) {
+        for (int w = 1;; ++w) {
+            if (w * h >= n) {
+                mn = min(mn, 2 * (w + h));
+                break;
+            }
+        }
+    }
+    printf("%d\n", mn);
     return 0;
 }

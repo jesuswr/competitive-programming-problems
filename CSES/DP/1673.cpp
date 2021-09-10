@@ -46,8 +46,43 @@ const int MAXN = 1e5; // CAMBIAR ESTE
 //mt19937 rng(chrono::system_clock::now().time_since_epoch().count());
 
 // GJNM
+vi G[2569];
+bool R[2569][2569];
+void dfs(int r, int u) {
+    R[r][u] = 1;
+    for (auto v : G[u])
+        if (!R[r][v])
+            dfs(r, v);
+}
 
 int main() {
+    int n, m; rii(n, m);
+    vector<tuple<int, int, ll>> edges(m);
+    FOR(i, 0, m) {
+        int a, b, c; riii(a, b, c);
+        edges[i] = {a - 1, b - 1, -c};
+        G[a - 1].pb(b - 1);
+    }
+    FOR(i, 0, n) dfs(i, i);
+    vector<ll> D(n, LLINF);
+    D[0] = 0;
+    bool change = true;
+    for (int i = 0; i < n - 1 && change; ++i) {
+        change = false;
+        for (auto [a, b, c] : edges) {
+            if (D[a] + c < D[b] && D[a] != LLINF) {
+                D[b] = D[a] + c;
+                change = true;
+            }
+        }
+    }
 
+    for (auto [a, b, c] : edges) {
+        if (D[a] + c < D[b] && R[b][n - 1] && D[a] != LLINF) {
+            printf("-1\n");
+            return 0;
+        }
+    }
+    printf("%lld\n", -D[n - 1]);
     return 0;
 }

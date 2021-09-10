@@ -46,8 +46,42 @@ const int MAXN = 1e5; // CAMBIAR ESTE
 //mt19937 rng(chrono::system_clock::now().time_since_epoch().count());
 
 // GJNM
+int N, M;
+vi G[MAXN];
+int VIS[MAXN], F[MAXN];
+void dfs(int u) {
+    VIS[u] = 1;
+
+    for (auto v : G[u]) {
+        if (VIS[v] == 0) {
+            F[v] = u;
+            dfs(v);
+        }
+        else if (VIS[v] == 1) {
+            vi cyc = {v, u};
+            do {
+                u = F[u];
+                cyc.pb(u);
+            } while (u != v);
+            printf("%d\n", SZ(cyc));
+            reverse(ALL(cyc));
+            FOR(i, 0, SZ(cyc)) printf("%d ", cyc[i] + 1);
+            printf("\n");
+            exit(0);
+        }
+    }
+
+    VIS[u] = 2;
+}
 
 int main() {
-
+    rii(N, M);
+    FOR(i, 0, M) {
+        int a, b; rii(a, b); --a, --b;
+        G[a].pb(b);
+    }
+    FOR(i, 0, N) if (VIS[i] == 0)
+        dfs(i);
+    printf("IMPOSSIBLE\n");
     return 0;
 }

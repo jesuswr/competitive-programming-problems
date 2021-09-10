@@ -42,12 +42,29 @@ int dadsadasda;
 
 const int INF = 0x3f3f3f3f;
 const ll LLINF = 1e18;
-const int MAXN = 1e5; // CAMBIAR ESTE
-//mt19937 rng(chrono::system_clock::now().time_since_epoch().count());
+const int MAXN = 61; // CAMBIAR ESTE
+mt19937 rng(chrono::system_clock::now().time_since_epoch().count());
 
 // GJNM
+int N, M, R; // cities, cars, rounds
+int D[MAXN][MAXN][MAXN];
+int DP[MAXN][MAXN][MAXN];
 
 int main() {
-
+    riii(N, M, R);
+    FOR(i, 0, N) FOR(j, 0, N) FOR(k, 0, N) DP[i][j][k] = INF;
+    FOR(c, 0, M) {
+        FOR(i, 0, N) FOR(j, 0, N) ri(D[c][i][j]);
+        FOR(k, 0, N) FOR(i, 0, N) FOR(j, 0, N) D[c][i][j] = min(D[c][i][j], D[c][i][k] + D[c][k][j]);
+        FOR(i, 0, N) FOR(j, 0, N) DP[0][i][j] = min(DP[0][i][j], D[c][i][j]);
+    }
+    FOR(r, 1, N) FOR(i, 0, N) FOR(j, 0, N) {
+        DP[r][i][j] = INF;
+        FOR(k, 0, N) DP[r][i][j] = min(DP[r][i][j], DP[r - 1][i][k] + DP[0][k][j]);
+    }
+    while (R--) {
+        int s, t, k; riii(s, t, k);
+        printf("%d\n", DP[min(k, N - 1)][s - 1][t - 1]);
+    }
     return 0;
 }

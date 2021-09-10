@@ -42,12 +42,29 @@ int dadsadasda;
 
 const int INF = 0x3f3f3f3f;
 const ll LLINF = 1e18;
-const int MAXN = 1e5; // CAMBIAR ESTE
+const int MAXN = 2e5 + 69; // CAMBIAR ESTE
+const int LOGK = 30;
 //mt19937 rng(chrono::system_clock::now().time_since_epoch().count());
 
 // GJNM
+int N, Q;
+int SUC[LOGK + 1][MAXN];
 
 int main() {
+    rii(N, Q);
+    FOR(i, 0, N) {
+        int a; ri(a);
+        SUC[0][i] = a - 1;
+    }
+    for (int k = 1; k <= LOGK; ++k)
+        FOR(i, 0, N) SUC[k][i] = SUC[k - 1][ SUC[k - 1][i] ];
+    while (Q--) {
+        int a, k; rii(a, k); --a;
+        for (int b = LOGK; b >= 0; --b)
+            if ((k >> b) & 1)
+                a = SUC[b][a];
+        printf("%d\n", a + 1);
+    }
 
     return 0;
 }
