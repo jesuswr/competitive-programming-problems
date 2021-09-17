@@ -1,7 +1,7 @@
 listita
 *.txt
 *.out
-aux.cpp
+*aux.cpp
 interactive_runner-1.py
 local_testing_tool.py
 *.jar
