@@ -2,7 +2,7 @@
 using namespace std;
 
 typedef long long ll;
-typedef pair<int,int> ii;
+typedef pair<int, int> ii;
 typedef vector<int> vi;
 typedef vector<ii> vii;
 
@@ -23,8 +23,8 @@ int qwert;
 
 const int INF = 0x3f3f3f3f;
 const ll INFLL = 1e18;
-const int MOD = 1e9+7;
-const int MAXN = 2e5+5;
+const int MOD = 1e9 + 7;
+const int MAXN = 2e5 + 5;
 
 void fastIO() {
     ios_base::sync_with_stdio(false);
@@ -32,7 +32,16 @@ void fastIO() {
 }
 
 
-int main(){
-
+int main() {
+    int t; ri(t);
+    while (t--) {
+        string s; cin >> s;
+        map<char, int> mp;
+        FOR(i,0,6) mp[s[i]] = i;
+        if (mp['r'] > mp['R'] || mp['g'] > mp['G'] || mp['b'] > mp['B'])
+            printf("NO\n");
+        else
+            printf("YES\n");
+    }
     return 0;
 }
