@@ -31,40 +31,14 @@ void fastIO() {
 	cin.tie(NULL);
 }
 
-int N, P;
-ii T[MAXN];
-ll ANS[MAXN];
+
+void solve() {
+}
+
 
 int main(){
-	rii(N,P);
-	FOR(i,0,N) {
-		ri(T[i].F);
-		T[i].S = i;
-	}
-
-	sort(T, T+N);
-	priority_queue<int> pq;
-
-	ll nxt = 0;
-	int l = 0;
-	int p = 0;
-	while (p < N) {
-		if (pq.empty())
-			nxt = max(nxt, 1ll * T[l].F);
-		while(l < N && T[l].F <= nxt) {
-			pq.push(-T[l].S);
-			++l;
-		}	
-		++p;
-		int ind = -pq.top();
-		pq.pop();
-		ANS[ind] = nxt + P;
-		nxt += P;
-	}
-
-	for(int i = 0; i < N; ++i) printf("%lld ", ANS[i]);
-	putchar('\n');
-
-
+	int t = 1; 
+	ri(t);
+	while(t--) solve();
 	return 0;
 }
