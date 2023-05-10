@@ -1,0 +1,10 @@
+{
+    "files.associations": {
+        "*.cpp": "cpp",
+        "random": "cpp",
+        "iostream": "cpp",
+        "chrono": "cpp",
+        "bitset": "cpp",
+        "ostream": "cpp"
+    }
+}
