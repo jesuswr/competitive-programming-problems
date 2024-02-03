@@ -42,7 +42,6 @@ const int INF = 0x3f3f3f3f;
 const ll LLINF = 1e18;
 const int MAXN = 1e5; // CAMBIAR ESTE
 
-// GJNM
 int N, Q;
 
 map<string, int> STR_TO_I;
